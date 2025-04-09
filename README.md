@@ -1,79 +1,94 @@
-# Scoutiva Smartband
+# ⚽ Scoutiva Smartband
 
-*Smart wristband designed to enhance the fan experience during FIFA World Cup 2034 in Saudi Arabia. Powered by AI, AR, and solar energy.*
+*A next-gen wearable redefining the fan experience at FIFA World Cup 2034 in Saudi Arabia.*  
+Built with *AI, **AR, and **solar technology*, Scoutiva is more than a device — it's your personal stadium assistant.
 
----
-
-## What is Scoutiva?
-
-Scoutiva is an innovative smart wristband that transforms the stadium experience for millions of fans. Designed with Saudi culture in mind and optimized for the FIFA World Cup 2034, Scoutiva offers smart navigation, instant payments, AR interaction, and much more.
+![Scoutiva Mockup](./scoutiva-band.png)
 
 ---
 
-## Key Features
+## 🔍 What is Scoutiva?
 
-- *Smart Navigation*  
-  Navigate the stadium with real-time, AI-powered guidance.
+*Scoutiva* is an AI-powered smart wristband designed to revolutionize how fans engage with stadiums.  
+From real-time navigation to instant purchases and immersive AR content, Scoutiva transforms passive spectators into connected, empowered participants — all while celebrating Saudi culture.
 
-- *Instant Payments*  
-  Pay instantly at food stalls, stores, and more with a tap of the wrist.
-
-- *AR Experience*  
-  Unlock fun and immersive AR content, mini-games, and real-time match stats.
-
-- *Health & Safety*  
-  Monitor heart rate, get emergency assistance, and send alerts if needed.
-
-- *Cultural Integration*  
-  Experience Saudi heritage through AR, language options, and cultural tips.
-
-- *Solar-Powered Charging*  
-  No need to worry about battery life during long match days.
-
-- *Accessibility Support*  
-  Features designed to support fans with disabilities (visual, auditory, mobility).
+> "Designed in Saudi Arabia. Built for the world."
 
 ---
 
-## Demo Website
+## ✨ Core Features
 
-[Visit the website](https://scoutiva.netlify.app)
-
----
-
-## Technologies Used
-
-- Artificial Intelligence (AI)
-- Augmented Reality (AR)
-- Solar energy systems
-- IoT (Internet of Things)
-- Wearable tech
-- Web technologies (HTML, CSS, JS)
+| Feature                | Description                                                                 |
+|------------------------|-----------------------------------------------------------------------------|
+| *Smart Navigation*   | Turn-by-turn directions to your seat using AI and haptic feedback.          |
+| *Instant Payments*   | Contactless, secure, and fast payments at vendors and kiosks.               |
+| *Augmented Reality*  | Live stats, replays, mini-games, and cultural AR content via simple gestures. |
+| *Health & Safety*    | Real-time heart rate monitoring and instant emergency alerts.               |
+| *Solar Charging*     | Eco-friendly and built for long event days — powered by sunlight.           |
+| *Cultural Experience*| Unlock Saudi stories, landmarks, and traditions using Scoutiva.             |
+| *Accessibility*      | Voice navigation, vibration alerts, and simplified interfaces for all fans. |
 
 ---
 
-## Team Scoutiva
+## 🌐 Live Demo
 
-We are a team of 4 Saudi students passionate about sports, tech, and innovation.  
-Our goal is to elevate the global fan experience and showcase Saudi creativity in FIFA World Cup 2034.
-
----
-
-## Roadmap
-
-- [x] Project idea & prototype design  
-- [ ] Full hardware and software integration  
-- [ ] Testing in local stadiums  
-- [ ] Partnership with FIFA organizers  
-- [ ] Launch at World Cup 2034  
+- *Website:* [scoutiva.netlify.app](https://scoutiva.netlify.app)
+- *App Preview:* [app-scoutiva.netlify.app](https://app-scoutiva.netlify.app)
 
 ---
 
-## Contact
+## 🧠 Technologies Used
 
-- Email: [scoutiva@outlook.com]
-- Website: [https://scoutiva.netlify.app](https://scoutiva.netlify.app)
+- *AI / ML:* Real-time fan flow analysis & smart routing
+- *AR:* Fan engagement through mobile & wearable AR content
+- *IoT:* Synchronized smart devices & stadium infrastructure
+- *Solar Energy:* Efficient, sustainable charging system
+- *Web Stack:* React.js, HTML5, CSS3, JavaScript
 
 ---
 
-> *Let's redefine the fan experience – with Scoutiva.*
+## 🛠 Project Status & Roadmap
+
+- ✅ Ideation & prototype design  
+- ✅ Web & app concept interfaces  
+- ⏳ Hardware integration (in progress)  
+- ⏳ Pilot testing in local stadium  
+- ⏳ Collaboration with FIFA organizers  
+- 🚀 Launch in FIFA World Cup 2034
+
+---
+
+## 🧑‍💻 Meet the Team
+
+We are a team of 4 Saudi students passionate about technology, sports, and user experience.  
+Scoutiva represents our vision of a smarter, safer, and more immersive global fan journey.
+
+> Interested in investing, collaborating, or mentoring? Let’s connect.
+
+---
+
+## 📂 Resources
+
+- [Official Presentation (PDF)](presentation/Scoutiva_Pitch_Deck.pdf)  
+- [Instagram](https://www.instagram.com/scoutiva_sa)  
+- [TikTok](https://www.tiktok.com/@scoutiva_sa)  
+- [X / Twitter](https://x.com/scoutiva_sa)  
+- [Telegram](https://t.me/scoutiva_sa)
+
+---
+
+## ✉ Contact
+
+- Email: [your-email@example.com]  
+- GitHub: [github.com/scoutiva](https://github.com/scoutiva)
+
+---
+
+## ⭐ Support Us
+
+If you like this project or believe in its vision, give it a ⭐ on GitHub!  
+We're open to contributors, mentors, and investors.
+
+---
+
+> *Scoutiva: The smart way to enjoy the beautiful game.*
