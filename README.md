@@ -3,7 +3,8 @@
 *A next-gen wearable redefining the fan experience at FIFA World Cup 2034 in Saudi Arabia.*  
 Built with *AI, **AR, and **solar technology*, Scoutiva is more than a device — it's your personal stadium assistant.
 
-![Scoutiva Mockup](https://i.ibb.co/4RrDWqJ1/ssssssw.jpg)
+![Scoutiva Mockup](https://i.ibb.co/Qv5kn1HM/ssssssw-removebg-preview.png)
+
 
 ---
 
