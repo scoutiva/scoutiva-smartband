@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoutiva - السوار الذكي لكأس العالم 2034</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#32CD32',
+                        accent: '#00A36C',
+                        saudi: '#006C35',
+                        dark: {
+                            bg: '#181818',
+                            card: '#222222',
+                        },
+                        light: {
+                            bg: '#FFFFFF',
+                            card: '#F5F5F5',
+                        }
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .feature-icon {
+            background: linear-gradient(45deg, #5D5CDE, #32CD32);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #5D5CDE 0%, #32CD32 100%);
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(93, 92, 222, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(93, 92, 222, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(93, 92, 222, 0);
+            }
+        }
+
+        .bracelet-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .bracelet-container:hover .bracelet-3d {
+            transform: rotateY(20deg) rotateX(10deg);
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .ar-demo {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ar-demo:hover .ar-overlay {
+            opacity: 1;
+        }
+
+        .app-screen {
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .app-screen:hover {
+            transform: scale(1.02);
+        }
+
+        #paymentAnimation, #securityAnimation, #navAnimation {
+            transition: all 0.5s ease;
+        }
+
+        /* Dark mode styles */
+        .dark .feature-card {
+            background-color: #222222;
+        }
+
+        /* Bracelet animation */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(93, 92, 222, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(93, 92, 222, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(93, 92, 222, 0.5); }
+        }
+
+        .glow-effect {
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-light-bg dark:bg-dark-bg text-gray-800 dark:text-gray-200">
+    <!-- Dark mode toggle -->
+    <div class="fixed top-5 left-5 z-50">
+        <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="text-2xl font-bold gradient-bg text-transparent bg-clip-text">
+                    <span class="text-primary">Scoutiva</span>
+                    <i class="fas fa-bolt text-secondary mr-1"></i>
+                </div>
+            </div>
+            <div class="hidden md:flex space-x-1 space-x-reverse">
+                <a href="#home" class="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800">الرئيسية</a>
+                <a href="#features" class="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800">المميزات</a>
+                <a href="#app" class="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800">التطبيق</a>
+                <a href="#pricing" class="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800">الأسعار</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobileMenuButton" class="p-2 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-dark-bg shadow-lg rounded-b-xl">
+            <div class="flex flex-col px-4 py-2">
+                <a href="#home" class="py-2 hover:text-primary">الرئيسية</a>
+                <a href="#features" class="py-2 hover:text-primary">المميزات</a>
+                <a href="#app" class="py-2 hover:text-primary">التطبيق</a>
+                <a href="#pricing" class="py-2 hover:text-primary">الأسعار</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative overflow-hidden pt-16 md:pt-20 pb-16 md:pb-24">
+        <div class="absolute inset-0 z-0 overflow-hidden">
+            <div class="absolute w-full h-full bg-gradient-to-b from-primary/10 to-secondary/10 dark:from-primary/5 dark:to-secondary/5"></div>
+            <div class="absolute top-0 left-0 w-96 h-96 bg-primary/20 dark:bg-primary/10 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-secondary/20 dark:bg-secondary/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 z-10 relative">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 text-center md:text-right mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                        <span class="gradient-bg text-transparent bg-clip-text">سكوتيفا</span>
+                        <br/>السوار الذكي لكأس العالم 2034
+                    </h1>
+                    <p class="text-lg md:text-xl mb-8 text-gray-700 dark:text-gray-300">
+                        تجربة مشجع فريدة في ملاعب السعودية بتقنيات الذكاء الاصطناعي والواقع المعزز
+                    </p>
+                    <div class="flex flex-wrap justify-center md:justify-start space-x-4 space-x-reverse">
+                        <button class="px-6 py-3 bg-primary text-white rounded-xl shadow-lg hover:shadow-xl transition-all mb-2 md:mb-0">
+                            <i class="fas fa-info-circle ml-2"></i>معرفة المزيد
+                        </button>
+                        <a href="#app" class="px-6 py-3 bg-white dark:bg-gray-800 text-primary border border-primary rounded-xl shadow-lg hover:shadow-xl transition-all">
+                            <i class="fas fa-mobile-alt ml-2"></i>جرب التطبيق
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative bracelet-container">
+                    <div class="w-full h-64 md:h-80 relative bracelet-3d">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <!-- Bracelet SVG -->
+                            <svg class="w-64 h-64 md:w-80 md:h-80 glow-effect" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                                <ellipse cx="100" cy="50" rx="90" ry="40" fill="none" stroke="#5D5CDE" stroke-width="4" />
+                                <ellipse cx="100" cy="50" rx="80" ry="35" fill="#32CD32" fill-opacity="0.2" stroke="#32CD32" stroke-width="2" />
+                                <rect x="85" y="30" width="30" height="40" rx="5" fill="#5D5CDE" />
+                                <circle cx="100" cy="50" r="8" fill="#32CD32" />
+                                <text x="100" y="53" text-anchor="middle" fill="white" font-size="8">SA</text>
+                                <path d="M60 50 C 70 30, 130 30, 140 50" fill="none" stroke="rgba(93, 92, 222, 0.8)" stroke-width="2" stroke-dasharray="4 2" />
+                                <path d="M60 50 C 70 70, 130 70, 140 50" fill="none" stroke="rgba(93, 92, 222, 0.8)" stroke-width="2" stroke-dasharray="4 2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <span class="inline-block px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm">
+                            <i class="fas fa-sun text-yellow-500 ml-1"></i>
+                            شحن بالطاقة الشمسية
+                        </span>
+                        <span class="inline-block px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm mr-2">
+                            <i class="fas fa-wifi text-primary ml-1"></i>
+                            اتصال ذكي
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-16 bg-gray-50 dark:bg-dark-card">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">تجربة المشجع في 2034</h2>
+                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+                    يقدم فريق Scoutiva فكرة مبتكرة لتعزيز تجربة المشجعين داخل ملاعب كأس العالم 2034 في المملكة العربية السعودية
+                    من خلال سوار ذكي متطور يعتمد على أحدث تقنيات الذكاء الاصطناعي والواقع المعزز
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <i class="fas fa-globe-asia text-3xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">كأس العالم 2034</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        تستضيف المملكة العربية السعودية بطولة كأس العالم لكرة القدم 2034 بملاعب حديثة ومتطورة
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <i class="fas fa-users text-3xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">تجربة مشجع فريدة</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        تقديم تجربة غير مسبوقة للمشجعين باستخدام أحدث التقنيات لجعل حضور المباريات أكثر متعة وأماناً
+                    </p>
+                </div>
+                
+                <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-all">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <i class="fas fa-microchip text-3xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">تقنية متطورة</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        دمج تقنيات الذكاء الاصطناعي والواقع المعزز لتقديم تجربة رقمية متكاملة تعزز التفاعل
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-sm font-medium mb-4">المميزات</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">مميزات السوار الذكي</h2>
+                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+                    تجربة تقنية فريدة من نوعها تجمع بين الراحة والأمان والتفاعل لتعزيز تجربة المشجع
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-map-marker-alt text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">الإرشاد الذكي</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يساعد المشجع في العثور على مقعده باستخدام اهتزازات موجهة وأضواء تنبيهية، بالإضافة إلى خريطة تفاعلية عبر تطبيق متصل بالسوار
+                    </p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-credit-card text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">الدفع الإلكتروني الفوري</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يتيح شراء المأكولات والمشروبات بسرعة دون الحاجة إلى استخدام الهاتف أو البطاقة البنكية من خلال خاصية الدفع اللاتلامسي
+                    </p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-vr-cardboard text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تجربة الواقع المعزز</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يوفر تحليلات حية للمباراة، لقطات حصرية، وإحصائيات مباشرة عند رفع يد المشجع أمامه للاستمتاع بتجربة مشاهدة متكاملة
+                    </p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-shield-alt text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تحسين الأمان عبر الذكاء الاصطناعي</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يسمح بتتبع أماكن التجمعات الكبيرة وتحليل الحركة للمساعدة في إدارة الحشود وتحسين الأمان داخل الملاعب
+                    </p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-bus text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">التكامل مع المواصلات العامة</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يمكن استخدام السوار للدخول إلى المترو والحافلات للوصول إلى الملاعب بسهولة دون الحاجة لتذاكر إضافية
+                    </p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-universal-access text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">دعم ذوي الاحتياجات الخاصة</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يوفر توجيهًا صوتيًا وإشعارات خاصة لمساعدة ذوي الاحتياجات الخاصة على التنقل بسهولة داخل الاستاد
+                    </p>
+                </div>
+                
+                <!-- Feature 7 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-mosque text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تعزيز الثقافة السعودية</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يحمل السوار تصاميم مستوحاة من التراث السعودي، مع محتوى تفاعلي يعرض معلومات عن تاريخ المملكة والملاعب
+                    </p>
+                </div>
+                
+                <!-- Feature 8 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-sun text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">شحن بالطاقة الشمسية</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يمكنك شحن السّوار عن طريق الطاقة الشمسية بحيث يكون صديقًا للبيئة ويعمل لفترات طويلة دون الحاجة للشحن
+                    </p>
+                </div>
+                
+                <!-- Feature 9 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-heartbeat text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تتبع المؤشرات الصحية</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        يمكن للسوار مراقبة المؤشرات الصحية الأساسية مثل معدل ضربات القلب ودرجة الحرارة لضمان سلامة المشجعين
+                    </p>
+                </div>
+                
+                <!-- Feature 10 -->
+                <div class="feature-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 hover:shadow-xl">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5">
+                        <i class="fas fa-ambulance text-2xl feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">ربط مع الإسعاف والإنقاذ</h3>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        عند حدوث أي طارئ صحي، يقوم السوار بإرسال إشارة للفريق الطبي مع تحديد الموقع بدقة للإسراع في الإنقاذ
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section class="py-16 bg-gray-50 dark:bg-dark-card">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-sm font-medium mb-4">تجربة تفاعلية</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">ماذا يقدم السوار الذكي؟</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
+                <div class="col-span-1 md:col-span-3 lg:col-span-1">
+                    <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-6 h-full">
+                        <h3 class="text-2xl font-bold mb-4 text-center">الدفع السريع</h3>
+                        <div id="paymentAnimation" class="w-full h-64 relative rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center pulse-animation">
+                                    <i class="fas fa-credit-card text-white text-2xl"></i>
+                                </div>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 text-sm shadow-md">
+                                <i class="fas fa-coffee text-primary ml-1"></i>
+                                <span>شراء قهوة</span>
+                            </div>
+                            <div id="paymentSuccess" class="absolute inset-0 bg-green-500/80 dark:bg-green-600/80 flex items-center justify-center opacity-0 transition-opacity duration-500">
+                                <div class="text-white text-center">
+                                    <i class="fas fa-check-circle text-4xl mb-2"></i>
+                                    <p class="text-xl font-bold">تمت عملية الدفع بنجاح!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-700 dark:text-gray-300 text-center">
+                            قم بالتمرير بالسوار لدفع ثمن المشتريات بسرعة وأمان
+                        </p>
+                        <div class="mt-4 text-center">
+                            <button id="paymentBtn" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                                <i class="fas fa-credit-card ml-2"></i>تجربة الدفع
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-1 md:col-span-3 lg:col-span-1">
+                    <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-6 h-full">
+                        <h3 class="text-2xl font-bold mb-4 text-center">الأمن والحماية</h3>
+                        <div id="securityAnimation" class="w-full h-64 relative rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                            <div class="grid grid-cols-5 grid-rows-5 gap-1 p-2 h-full">
+                                <div class="security-dot bg-green-500/30 rounded-full"></div>
+                                <!-- Security dots are dynamically generated by JS -->
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 text-sm shadow-md">
+                                <i class="fas fa-shield-alt text-primary ml-1"></i>
+                                <span>تحليل الحشود</span>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-700 dark:text-gray-300 text-center">
+                            يحلل الذكاء الاصطناعي حركة الجماهير لزيادة الأمان
+                        </p>
+                        <div class="mt-4 text-center">
+                            <button id="securityBtn" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                                <i class="fas fa-shield-alt ml-2"></i>اكتشاف التجمعات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-span-1 md:col-span-3 lg:col-span-1">
+                    <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-6 h-full">
+                        <h3 class="text-2xl font-bold mb-4 text-center">التوجيه الذكي</h3>
+                        <div id="navAnimation" class="w-full h-64 relative rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                            <div class="absolute inset-0">
+                                <!-- Stadium map background -->
+                                <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="50" cy="50" rx="45" ry="35" fill="none" stroke="#ccc" stroke-width="1" />
+                                    <ellipse cx="50" cy="50" rx="35" ry="25" fill="none" stroke="#ccc" stroke-width="1" />
+                                    <rect x="20" y="45" width="60" height="10" fill="none" stroke="#ccc" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div id="userPosition" class="absolute w-4 h-4 bg-blue-500 rounded-full shadow-md" style="top: 70%; left: 30%"></div>
+                            <div id="seatPosition" class="absolute w-4 h-4 bg-green-500 rounded-full shadow-md pulse-animation" style="top: 40%; left: 65%"></div>
+                            <div id="pathLine" class="absolute" style="top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+                                <svg width="100%" height="100%">
+                                    <path id="navPath" d="M30,70 Q50,60 65,40" stroke="#5D5CDE" stroke-width="2" stroke-dasharray="4 2" fill="none" />
+                                </svg>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 text-sm shadow-md">
+                                <i class="fas fa-directions text-primary ml-1"></i>
+                                <span>البحث عن المقعد</span>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-700 dark:text-gray-300 text-center">
+                            يساعدك السوار في العثور على مقعدك بكل سهولة داخل الاستاد
+                        </p>
+                        <div class="mt-4 text-center">
+                            <button id="navBtn" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                                <i class="fas fa-map-marker-alt ml-2"></i>إيجاد المقعد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg p-8 overflow-hidden">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2 mb-8 md:mb-0 md:pl-8">
+                        <h3 class="text-2xl font-bold mb-4">تجربة الواقع المعزز</h3>
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+                            يوفر السوار الذكي تجربة واقع معزز فريدة للمشجعين، حيث يمكنهم الاطلاع على إحصائيات اللاعبين والفرق في الوقت الفعلي
+                            عند توجيه السوار نحو الملعب.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>عرض إحصائيات المباراة المباشرة</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>معلومات تفصيلية عن اللاعبين</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>لقطات إعادة حصرية للحظات المهمة</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>رسوم متحركة توضح الخطط التكتيكية</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2 relative ar-demo">
+                        <div class="rounded-2xl overflow-hidden shadow-lg">
+                            <div class="relative w-full aspect-video bg-gradient-to-r from-primary/10 to-secondary/10 overflow-hidden">
+                                <!-- AR Player stats mockup -->
+                                <div id="arDisplay" class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500">
+                                    <div class="bg-black/40 backdrop-blur-sm p-4 rounded-xl w-3/4 text-white">
+                                        <div class="flex items-center mb-3">
+                                            <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+                                                <span class="font-bold">10</span>
+                                            </div>
+                                            <div class="mr-3">
+                                                <h4 class="font-bold text-lg">محمد الشهري</h4>
+                                                <p class="text-sm opacity-80">المنتخب السعودي</p>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-2 mb-2 text-center text-sm">
+                                            <div class="bg-white/20 rounded p-1">
+                                                <div class="font-bold">2</div>
+                                                <div class="opacity-80">أهداف</div>
+                                            </div>
+                                            <div class="bg-white/20 rounded p-1">
+                                                <div class="font-bold">85%</div>
+                                                <div class="opacity-80">تمريرات</div>
+                                            </div>
+                                            <div class="bg-white/20 rounded p-1">
+                                                <div class="font-bold">3</div>
+                                                <div class="opacity-80">مراوغات</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Stadium background -->
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-futbol text-5xl text-gray-400 dark:text-gray-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ar-overlay flex items-center justify-center">
+                            <button id="arBtn" class="px-6 py-3 bg-primary text-white rounded-xl shadow-lg">
+                                <i class="fas fa-vr-cardboard ml-2"></i>تجربة الواقع المعزز
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Section -->
+    <section id="app" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-sm font-medium mb-4">التطبيق</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">تطبيق سكوتيفا الذكي</h2>
+                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+                    تطبيق متكامل يتصل بالسوار الذكي ويوفر تجربة مشجع متكاملة من بداية رحلتك إلى الملعب وحتى العودة
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pl-10">
+                    <div class="app-screen bg-gray-900 pb-6 relative">
+                        <div class="h-6 bg-gray-800 rounded-t-2xl flex items-center justify-center">
+                            <div class="w-20 h-1 bg-gray-600 rounded-full"></div>
+                        </div>
+                        <div id="appScreen" class="bg-primary/5 dark:bg-primary/10 h-96 text-center flex flex-col items-center justify-center p-4">
+                            <!-- App Screen Content -->
+                            <div class="scoutiva-app-splash relative h-full w-full flex flex-col items-center justify-center">
+                                <div class="w-24 h-24 mb-4">
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="45" fill="#5D5CDE" />
+                                        <circle cx="50" cy="50" r="35" fill="#32CD32" fill-opacity="0.3" />
+                                        <path d="M30,50 C30,35 70,35 70,50 C70,65 30,65 30,50 Z" fill="white" fill-opacity="0.8" />
+                                        <circle cx="50" cy="50" r="10" fill="white" />
+                                        <circle cx="50" cy="50" r="5" fill="#32CD32" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-2xl font-bold mb-2 text-primary">Scoutiva</h2>
+                                <p class="text-gray-800 dark:text-gray-200 mb-6">السوار الذكي لكأس العالم 2034</p>
+                                <button id="appLoginBtn" class="px-6 py-3 bg-primary text-white rounded-xl shadow-lg mb-2 w-64">تسجيل الدخول</button>
+                                <button class="px-6 py-3 bg-white dark:bg-gray-800 text-primary border border-primary rounded-xl w-64">إنشاء حساب جديد</button>
+                            </div>
+                            
+                            <div class="scoutiva-app-home hidden relative h-full w-full flex flex-col">
+                                <!-- App header -->
+                                <div class="flex justify-between items-center p-3 bg-primary text-white rounded-lg mb-3">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-bars"></i>
+                                    </div>
+                                    <div class="font-bold">Scoutiva</div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- User Bracelet -->
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div>
+                                            <h3 class="font-bold">سوارك الذكي</h3>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">متصل ويعمل بشكل جيد</p>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+                                            <i class="fas fa-check text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-sm">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-battery-three-quarters text-green-500 ml-1"></i>
+                                            <span>82%</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-signal text-primary ml-1"></i>
+                                            <span>متصل</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-sliders-h text-gray-500 ml-1"></i>
+                                            <span>إعدادات</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Next match -->
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-3">
+                                    <h3 class="font-bold mb-2">المباراة القادمة</h3>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                <span class="font-bold">🇸🇦</span>
+                                            </div>
+                                            <div class="font-bold">السعودية</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">15 يوليو</div>
+                                            <div class="text-xs">8:00 م</div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <div class="font-bold">البرازيل</div>
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                <span class="font-bold">🇧🇷</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">التفاصيل والخريطة</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Features buttons -->
+                                <div class="grid grid-cols-3 gap-2 mb-3">
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-2 text-center">
+                                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-1">
+                                            <i class="fas fa-map-marker-alt text-primary"></i>
+                                        </div>
+                                        <span class="text-xs">خريطة</span>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-2 text-center">
+                                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-1">
+                                            <i class="fas fa-ticket-alt text-primary"></i>
+                                        </div>
+                                        <span class="text-xs">تذكرتي</span>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-2 text-center">
+                                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-1">
+                                            <i class="fas fa-cog text-primary"></i>
+                                        </div>
+                                        <span class="text-xs">إعدادات</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Navigation -->
+                                <div class="mt-auto bg-white dark:bg-gray-800 rounded-lg py-2 flex justify-around">
+                                    <div class="text-center">
+                                        <i class="fas fa-home text-primary"></i>
+                                        <div class="text-xs">الرئيسية</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-futbol text-gray-500"></i>
+                                        <div class="text-xs">المباريات</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-wallet text-gray-500"></i>
+                                        <div class="text-xs">المحفظة</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <i class="fas fa-user text-gray-500"></i>
+                                        <div class="text-xs">حسابي</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold mb-6">تطبيق يجمع كل ما تحتاجه</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-1 ml-4">
+                                <i class="fas fa-link text-lg feature-icon"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">ربط سهل مع السوار الذكي</h4>
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    اتصال سلس بين تطبيق الهاتف والسوار الذكي مع واجهة مستخدم سهلة تظهر حالة الاتصال وبطارية السوار
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-1 ml-4">
+                                <i class="fas fa-ticket-alt text-lg feature-icon"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">إدارة التذاكر والمباريات</h4>
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    اطلع على معلومات المباريات المجدولة والتذاكر المشتراة مع إمكانية نقلها إلى السوار الذكي
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-1 ml-4">
+                                <i class="fas fa-map-marked-alt text-lg feature-icon"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">خرائط تفاعلية للملاعب</h4>
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    خرائط مفصلة للملاعب مع إرشادات مباشرة، ونقاط الاهتمام مثل المطاعم والحمامات ومناطق الخدمات
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center shrink-0 mt-1 ml-4">
+                                <i class="fas fa-wallet text-lg feature-icon"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-1">محفظة رقمية متكاملة</h4>
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    شحن رصيد السوار الذكي من خلال التطبيق ومتابعة المعاملات المالية والإنفاق أثناء الفعاليات
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 text-center md:text-right">
+                        <button class="px-6 py-3 bg-primary text-white rounded-xl shadow-lg mr-4 hover:bg-primary/90 transition-colors">
+                            <i class="fab fa-google-play ml-2"></i>Google Play
+                        </button>
+                        <button class="px-6 py-3 bg-gray-900 dark:bg-gray-800 text-white rounded-xl shadow-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fab fa-apple ml-2"></i>App Store
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-16 bg-gray-50 dark:bg-dark-card">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary dark:bg-primary/20 text-sm font-medium mb-4">الأسعار</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">خيارات الحصول على السوار</h2>
+                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+                    نوفر خيارات متعددة للحصول على السوار الذكي حسب نوع التذكرة وفئة المقاعد
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Regular option -->
+                <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg overflow-hidden transition-transform hover:scale-105">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-center">الباقة العادية</h3>
+                        <div class="text-center mb-6">
+                            <span class="text-4xl font-bold">150</span>
+                            <span class="text-lg text-gray-600 dark:text-gray-400">ريال</span>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>سوار ذكي أساسي</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>إرشاد داخل الملعب</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>الدفع الإلكتروني</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>دعم المواصلات العامة</span>
+                            </li>
+                            <li class="flex items-start text-gray-500">
+                                <i class="fas fa-times-circle mt-1 ml-2"></i>
+                                <span>تجربة واقع معزز كاملة</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <button class="w-full py-3 bg-primary text-white rounded-xl shadow hover:bg-primary/90 transition-colors">
+                                احجز الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Premium option -->
+                <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-xl overflow-hidden transform scale-105 relative z-10 border-2 border-primary">
+                    <div class="absolute top-0 right-0 mt-4 mr-4">
+                        <span class="inline-block px-3 py-1 bg-primary text-white text-xs rounded-full font-medium">الأكثر طلباً</span>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-center">الباقة المميزة</h3>
+                        <div class="text-center mb-6">
+                            <span class="text-4xl font-bold">350</span>
+                            <span class="text-lg text-gray-600 dark:text-gray-400">ريال</span>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>سوار ذكي متقدم</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>جميع مميزات الباقة العادية</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>تجربة واقع معزز كاملة</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>تكامل مع خدمات الطوارئ</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>مراقبة المؤشرات الصحية</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <button class="w-full py-3 bg-primary text-white rounded-xl shadow-lg hover:bg-primary/90 transition-colors">
+                                احجز الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VIP option -->
+                <div class="bg-white dark:bg-dark-bg rounded-2xl shadow-lg overflow-hidden transition-transform hover:scale-105">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-center">باقة VIP</h3>
+                        <div class="text-center mb-6">
+                            <span class="text-2xl font-bold text-green-600">مجاناً</span>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">مع تذاكر الـ VIP</p>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>سوار ذكي متقدم فاخر</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>جميع مميزات الباقة المميزة</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>تصميم خاص بشعار المونديال</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>محتوى حصري للواقع المعزز</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 ml-2"></i>
+                                <span>أولوية الدعم الفني</span>
+                            </li>
+                        </ul>
+                        <div class="text-center">
+                            <button class="w-full py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                متوفر مع تذاكر VIP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="bg-gradient-to-r from-primary to-secondary rounded-3xl overflow-hidden relative">
+                <div class="absolute inset-0 bg-pattern opacity-10"></div>
+                <div class="relative z-10 px-6 py-12 md:p-16 text-white">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-2/3 mb-8 md:mb-0">
+                            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                                استعد لتجربة كأس العالم 2034 بتقنية جديدة
+                            </h2>
+                            <p class="text-lg md:text-xl opacity-90 mb-8">
+                                احصل على السوار الذكي من Scoutiva واستمتع بتجربة مشجع فريدة في ملاعب السعودية. سجل اهتمامك الآن وكن أول من يحصل على مستجدات المشروع.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <button class="px-6 py-3 bg-white text-primary rounded-xl font-bold hover:bg-gray-100 transition-colors">
+                                    سجل اهتمامك الآن
+                                </button>
+                                <button class="px-6 py-3 bg-transparent border-2 border-white text-white rounded-xl font-bold hover:bg-white/10 transition-colors">
+                                    تواصل معنا
+                                </button>
+                            </div>
+                        </div>
+                        <div class="md:w-1/3 flex justify-center">
+                            <div class="w-48 h-48 relative">
+                                <div class="absolute inset-0 rounded-full bg-white/20 animate-ping opacity-40"></div>
+                                <div class="absolute inset-4 rounded-full bg-white/30"></div>
+                                <div class="absolute inset-8 rounded-full bg-white/40 flex items-center justify-center">
+                                    <span class="text-4xl font-bold">2034</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between mb-8">
+                <div class="mb-8 md:mb-0">
+                    <div class="text-2xl font-bold mb-4 flex items-center">
+                        <span class="text-primary">Scoutiva</span>
+                        <i class="fas fa-bolt text-secondary mr-1"></i>
+                    </div>
+                    <p class="text-gray-400 max-w-xs">
+                        تجربة مشجع فريدة في ملاعب السعودية بتقنيات الذكاء الاصطناعي والواقع المعزز لكأس العالم 2034
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">الشركة</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">من نحن</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">فريق العمل</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">الوظائف</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">اتصل بنا</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">الروابط</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">التطبيق</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">المميزات</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">الأسعار</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">الدعم الفني</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">تواصل معنا</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <i class="fas fa-envelope ml-2 text-primary"></i>
+                                <a href="mailto:info@scoutiva.com" class="text-gray-400 hover:text-white transition-colors">info@scoutiva.com</a>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-phone ml-2 text-primary"></i>
+                                <a href="tel:+9661234567890" class="text-gray-400 hover:text-white transition-colors">+966 12 345 6789</a>
+                            </li>
+                            <li class="mt-4">
+                                <div class="flex space-x-4 space-x-reverse">
+                                    <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center">
+                <p class="text-gray-500">
+                    &copy; 2023 Scoutiva. جميع الحقوق محفوظة
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle
+        function initDarkMode() {
+            // Check for user preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            // Listen for changes to the prefers-color-scheme media query
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            });
+            
+            // Toggle dark mode with button
+            document.getElementById('darkModeToggle').addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
+        
+        // Mobile menu toggle
+        function initMobileMenu() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Close menu when clicking a link
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        }
+
+        // Initialize security animation elements
+        function initSecurityDots() {
+            const securityAnimation = document.getElementById('securityAnimation');
+            if (!securityAnimation) return;
+            
+            const gridContainer = securityAnimation.querySelector('.grid');
+            if (!gridContainer) return;
+            
+            // Clear existing dots
+            gridContainer.innerHTML = '';
+            
+            // Create dots for the grid
+            for (let i = 0; i < 25; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'security-dot bg-green-500/30 dark:bg-green-500/20 rounded-full';
+                gridContainer.appendChild(dot);
+            }
+        }
+        
+        // Payment animation
+        function initPaymentAnimation() {
+            const paymentBtn = document.getElementById('paymentBtn');
+            const paymentAnimation = document.getElementById('paymentAnimation');
+            const paymentSuccess = document.getElementById('paymentSuccess');
+            
+            if (!paymentBtn || !paymentAnimation || !paymentSuccess) return;
+            
+            paymentBtn.addEventListener('click', () => {
+                // Animate the payment process
+                setTimeout(() => {
+                    paymentSuccess.style.opacity = '1';
+                    
+                    // Reset after animation completes
+                    setTimeout(() => {
+                        paymentSuccess.style.opacity = '0';
+                    }, 2000);
+                }, 1000);
+            });
+        }
+        
+        // Security feature animation
+        function initSecurityAnimation() {
+            const securityBtn = document.getElementById('securityBtn');
+            const securityAnimation = document.getElementById('securityAnimation');
+            
+            if (!securityBtn || !securityAnimation) return;
+            
+            securityBtn.addEventListener('click', () => {
+                // Get all dots
+                const dots = securityAnimation.querySelectorAll('.security-dot');
+                
+                // Create a hotspot
+                const hotspotIndex = Math.floor(Math.random() * dots.length);
+                
+                // Color animation
+                dots.forEach((dot, index) => {
+                    // Calculate distance from hotspot
+                    const distance = Math.abs(index - hotspotIndex);
+                    
+                    // Reset colors
+                    dot.className = 'security-dot rounded-full';
+                    
+                    // Apply color based on distance from hotspot
+                    if (distance < 2) {
+                        dot.classList.add('bg-red-500/70');
+                    } else if (distance < 4) {
+                        dot.classList.add('bg-orange-500/60');
+                    } else if (distance < 6) {
+                        dot.classList.add('bg-yellow-500/50');
+                    } else {
+                        dot.classList.add('bg-green-500/30');
+                    }
+                    
+                    // Add transition
+                    dot.style.transition = 'background-color 0.5s ease';
+                });
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    dots.forEach(dot => {
+                        dot.className = 'security-dot bg-green-500/30 dark:bg-green-500/20 rounded-full';
+                    });
+                }, 3000);
+            });
+        }
+        
+        // Navigation animation
+        function initNavAnimation() {
+            const navBtn = document.getElementById('navBtn');
+            const userPosition = document.getElementById('userPosition');
+            const navPath = document.getElementById('navPath');
+            
+            if (!navBtn || !userPosition || !navPath) return;
+            
+            let animate = false;
+            
+            navBtn.addEventListener('click', () => {
+                animate = !animate;
+                
+                if (animate) {
+                    // Simple animation for the user position along the path
+                    let progress = 0;
+                    const animateNav = () => {
+                        if (progress <= 1 && animate) {
+                            // Move along the path
+                            const point = getPointOnPath(progress);
+                            userPosition.style.top = `${point.y}%`;
+                            userPosition.style.left = `${point.x}%`;
+                            progress += 0.01;
+                            requestAnimationFrame(animateNav);
+                        }
+                    };
+                    
+                    requestAnimationFrame(animateNav);
+                }
+            });
+            
+            // Function to get point coordinates on a quadratic bezier path
+            function getPointOnPath(t) {
+                // Simple quadratic bezier path from (30,70) to (65,40) with control point (50,60)
+                const x1 = 30, y1 = 70;
+                const x2 = 65, y2 = 40;
+                const cpx = 50, cpy = 60;
+                
+                const x = (1-t)*(1-t)*x1 + 2*(1-t)*t*cpx + t*t*x2;
+                const y = (1-t)*(1-t)*y1 + 2*(1-t)*t*cpy + t*t*y2;
+                
+                return { x, y };
+            }
+        }
+        
+        // AR Display Animation
+        function initArAnimation() {
+            const arBtn = document.querySelector('#arBtn');
+            const arDisplay = document.querySelector('#arDisplay');
+            
+            if (!arBtn || !arDisplay) return;
+            
+            arBtn.addEventListener('click', () => {
+                // Toggle AR display
+                if (arDisplay.style.opacity === '1') {
+                    arDisplay.style.opacity = '0';
+                } else {
+                    arDisplay.style.opacity = '1';
+                }
+            });
+        }
+        
+        // App screen functionality
+        function initAppScreen() {
+            const appLoginBtn = document.getElementById('appLoginBtn');
+            const splashScreen = document.querySelector('.scoutiva-app-splash');
+            const homeScreen = document.querySelector('.scoutiva-app-home');
+            
+            if (!appLoginBtn || !splashScreen || !homeScreen) return;
+            
+            appLoginBtn.addEventListener('click', () => {
+                // Hide splash screen, show home screen
+                splashScreen.classList.add('hidden');
+                homeScreen.classList.remove('hidden');
+            });
+        }
+        
+        // Initialize everything when document is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            initMobileMenu();
+            initSecurityDots();
+            initPaymentAnimation();
+            initSecurityAnimation();
+            initNavAnimation();
+            initArAnimation();
+            initAppScreen();
+            
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
