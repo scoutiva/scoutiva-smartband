@@ -79,7 +79,7 @@ Scoutiva represents our vision of a smarter, safer, and more immersive global fa
 
 ## ✉ Contact
 
-- Email: [your-email@example.com]  
+- Email: [scoutiva@outlook.com]  
 - GitHub: [github.com/scoutiva](https://github.com/scoutiva)
 
 ---
