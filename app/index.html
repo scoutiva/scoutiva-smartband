@@ -1,0 +1,2491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoutiva - تطبيق السوار الذكي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#32CD32',
+                        accent: '#00A36C',
+                        saudi: '#006C35',
+                        dark: {
+                            bg: '#181818',
+                            card: '#222222',
+                        },
+                        light: {
+                            bg: '#FFFFFF',
+                            card: '#F5F5F5',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-down': 'slideDown 0.3s ease-out',
+                        'slide-left': 'slideLeft 0.3s ease-out',
+                        'slide-right': 'slideRight 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideLeft: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideRight: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #333;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #5D5CDE;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4949b3;
+        }
+
+        /* Phone frame styling */
+        .phone-frame {
+            position: relative;
+            width: 330px;
+            height: 667px;
+            max-height: 85vh;
+            background-color: #000;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .phone-frame.dark {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .screen {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+            background-color: white;
+            overflow: hidden;
+            border-radius: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 30px;
+            background-color: #000;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 10;
+        }
+
+        .screen-content {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            height: calc(100% - 30px);
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 9px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 5px;
+            background-color: #000;
+            border-radius: 3px;
+            z-index: 20;
+        }
+
+        .dark .home-indicator {
+            background-color: white;
+        }
+
+        /* App-specific styles */
+        .app-screen {
+            height: 100%;
+            display: none;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #5D5CDE 0%, #32CD32 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #5D5CDE 0%, #32CD32 100%);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+
+        .bracelet-wrapper {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .bracelet-wrapper:hover {
+            transform: rotateY(20deg) rotateX(10deg);
+        }
+
+        /* Pulse animation */
+        .ping-animation {
+            position: relative;
+        }
+
+        .ping-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: inherit;
+            border-radius: inherit;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+            z-index: -1;
+        }
+
+        @keyframes ping {
+            75%, 100% {
+                transform: scale(1.7);
+                opacity: 0;
+            }
+        }
+
+        /* Map styles */
+        .map-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        .marker-ping {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: rgba(93, 92, 222, 0.5);
+            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        /* AR styles */
+        .ar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .ar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Stadium seating animation */
+        @keyframes seatPulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.2; }
+        }
+
+        .seat {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            position: absolute;
+            background-color: #aaa;
+        }
+
+        .seat.highlight {
+            background-color: #5D5CDE;
+            animation: seatPulse 2s infinite;
+        }
+
+        /* Player progress animation */
+        @keyframes progress {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .progress-animation {
+            width: 0;
+            animation: progress 30s linear forwards;
+        }
+
+        /* Payment animation */
+        .payment-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #5D5CDE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 20px auto;
+        }
+
+        .payment-ring {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            border: 2px solid #5D5CDE;
+            opacity: 0;
+        }
+
+        @keyframes paymentRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .payment-active .payment-ring {
+            animation: paymentRing 1.5s infinite;
+        }
+
+        /* Emergency button animation */
+        @keyframes emergencyPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
+        .emergency-button {
+            animation: emergencyPulse 2s infinite;
+        }
+
+        /* Tab indicator animation */
+        .tab-indicator {
+            position: absolute;
+            bottom: 0;
+            height: 3px;
+            background-color: #5D5CDE;
+            transition: all 0.3s ease;
+        }
+
+        /* Health animation */
+        @keyframes heartRate {
+            0% { height: 10px; }
+            20% { height: 20px; }
+            30% { height: 10px; }
+            40% { height: 30px; }
+            50% { height: 10px; }
+            60% { height: 10px; }
+            100% { height: 10px; }
+        }
+
+        .heart-rate-bar {
+            width: 3px;
+            background-color: #F43F5E;
+            margin: 0 1px;
+            animation: heartRate 1s infinite;
+            animation-delay: calc(var(--delay) * 0.1s);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex items-center justify-center p-4">
+    <!-- Dark mode toggle -->
+    <div class="fixed top-5 left-5 z-50">
+        <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+        </button>
+    </div>
+    
+    <!-- App Container -->
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-8 w-full max-w-6xl mx-auto">
+        <!-- Control Panel -->
+        <div class="w-full md:w-1/3 lg:w-1/4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 order-2 md:order-1">
+            <h2 class="text-xl font-bold mb-4 text-center md:text-right">تجربة تطبيق سكوتيفا</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 text-sm">
+                اختر إحدى الشاشات التالية لعرض وظائف التطبيق المختلفة والمتصلة بالسوار الذكي
+            </p>
+            
+            <div class="space-y-3">
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 text-primary text-right transition-all flex items-center" data-screen="login">
+                    <i class="fas fa-sign-in-alt ml-3 w-6 text-center"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="home">
+                    <i class="fas fa-home ml-3 w-6 text-center"></i>
+                    <span>الشاشة الرئيسية</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="bracelet">
+                    <i class="fas fa-link ml-3 w-6 text-center"></i>
+                    <span>حالة السوار الذكي</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="matches">
+                    <i class="fas fa-futbol ml-3 w-6 text-center"></i>
+                    <span>المباريات وتذاكري</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="navigation">
+                    <i class="fas fa-map-marker-alt ml-3 w-6 text-center"></i>
+                    <span>التوجيه وإيجاد المقعد</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="payment">
+                    <i class="fas fa-credit-card ml-3 w-6 text-center"></i>
+                    <span>الدفع الالكتروني</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="ar">
+                    <i class="fas fa-vr-cardboard ml-3 w-6 text-center"></i>
+                    <span>الواقع المعزز</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="health">
+                    <i class="fas fa-heartbeat ml-3 w-6 text-center"></i>
+                    <span>المؤشرات الصحية</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="emergency">
+                    <i class="fas fa-ambulance ml-3 w-6 text-center"></i>
+                    <span>الإسعاف والطوارئ</span>
+                </button>
+                
+                <button class="screen-button w-full py-3 px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-primary/10 dark:hover:bg-primary/20 text-gray-700 dark:text-gray-300 hover:text-primary text-right transition-all flex items-center" data-screen="settings">
+                    <i class="fas fa-cog ml-3 w-6 text-center"></i>
+                    <span>الإعدادات</span>
+                </button>
+            </div>
+            
+            <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                تطبيق سكوتيفا للسوار الذكي
+                <br>كأس العالم 2034
+            </div>
+        </div>
+        
+        <!-- Phone Simulator -->
+        <div class="phone-frame-container order-1 md:order-2 flex flex-col items-center">
+            <div id="phoneFrame" class="phone-frame">
+                <div class="notch"></div>
+                <div class="home-indicator"></div>
+                <div id="screen" class="screen dark:bg-gray-900">
+                    <div class="screen-content">
+                        <!-- Login Screen -->
+                        <div id="login" class="app-screen active">
+                            <div class="flex flex-col items-center justify-center h-full p-6">
+                                <div class="w-24 h-24 mb-8">
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="45" fill="#5D5CDE" />
+                                        <circle cx="50" cy="50" r="35" fill="#32CD32" fill-opacity="0.3" />
+                                        <path d="M30,50 C30,35 70,35 70,50 C70,65 30,65 30,50 Z" fill="white" fill-opacity="0.8" />
+                                        <circle cx="50" cy="50" r="10" fill="white" />
+                                        <circle cx="50" cy="50" r="5" fill="#32CD32" />
+                                    </svg>
+                                </div>
+                                <h1 class="text-3xl font-bold mb-2 gradient-text">Scoutiva</h1>
+                                <p class="text-gray-600 dark:text-gray-400 mb-10">السوار الذكي لكأس العالم 2034</p>
+                                
+                                <div class="w-full max-w-xs">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium mb-2">البريد الإلكتروني</label>
+                                        <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-base" placeholder="أدخل بريدك الإلكتروني" />
+                                    </div>
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium mb-2">كلمة المرور</label>
+                                        <input type="password" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-base" placeholder="أدخل كلمة المرور" />
+                                    </div>
+                                    <button id="loginBtn" class="w-full py-3 bg-primary text-white rounded-xl shadow-lg mb-4">تسجيل الدخول</button>
+                                    <div class="text-center">
+                                        <a href="#" class="text-primary text-sm">نسيت كلمة المرور؟</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-8 text-center">
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">
+                                        ليس لديك حساب؟
+                                        <a href="#" class="text-primary">إنشاء حساب جديد</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Home Screen -->
+                        <div id="home" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <i class="fas fa-bars text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h1 class="text-xl font-bold">Scoutiva</h1>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-bell text-lg"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Welcome & Date -->
+                                <div class="mb-6">
+                                    <h2 class="text-xl font-bold">مرحباً، أحمد</h2>
+                                    <p class="text-gray-600 dark:text-gray-400">الثلاثاء، 15 يوليو 2034</p>
+                                </div>
+                                
+                                <!-- Bracelet status card -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <h3 class="font-bold">سوارك الذكي</h3>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">متصل ويعمل بشكل جيد</p>
+                                        </div>
+                                        <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-green-600 dark:text-green-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between mt-3 text-sm">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-battery-three-quarters text-green-600 dark:text-green-400 ml-1"></i>
+                                            <span>82%</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-signal text-primary ml-1"></i>
+                                            <span>متصل</span>
+                                        </div>
+                                        <div class="flex items-center text-gray-500">
+                                            <i class="fas fa-cog ml-1"></i>
+                                            <span>الإعدادات</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Next match card -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <h3 class="font-bold mb-3">المباراة القادمة</h3>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                <span class="font-bold">🇸🇦</span>
+                                            </div>
+                                            <div class="font-bold">السعودية</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">اليوم</div>
+                                            <div class="font-bold">8:00 م</div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <div class="font-bold">البرازيل</div>
+                                            <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                <span class="font-bold">🇧🇷</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">عرض التفاصيل والخريطة</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Quick actions -->
+                                <h3 class="font-bold mb-3">الوصول السريع</h3>
+                                <div class="grid grid-cols-4 gap-2 mb-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-1">
+                                            <i class="fas fa-map-marker-alt text-blue-600 dark:text-blue-400"></i>
+                                        </div>
+                                        <span class="text-xs">خريطة</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mb-1">
+                                            <i class="fas fa-ticket-alt text-purple-600 dark:text-purple-400"></i>
+                                        </div>
+                                        <span class="text-xs">تذكرتي</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-1">
+                                            <i class="fas fa-wallet text-green-600 dark:text-green-400"></i>
+                                        </div>
+                                        <span class="text-xs">رصيدي</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mb-1">
+                                            <i class="fas fa-ambulance text-red-600 dark:text-red-400"></i>
+                                        </div>
+                                        <span class="text-xs">طوارئ</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Tournament News -->
+                                <h3 class="font-bold mb-3">أخبار البطولة</h3>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 mb-4">
+                                    <div class="flex items-start">
+                                        <div class="w-16 h-16 rounded-lg bg-gray-200 dark:bg-gray-700 ml-3 shrink-0 flex items-center justify-center">
+                                            <i class="fas fa-newspaper text-gray-400 dark:text-gray-500 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm">افتتاح مبهر لكأس العالم في الرياض</h4>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                                                شهدت العاصمة السعودية عرضاً مبهراً في افتتاح كأس العالم 2034، بحضور أكثر من 80 ألف متفرج...
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-home text-primary"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-wallet"></i>
+                                    <span class="text-xs">المحفظة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bracelet Status Screen -->
+                        <div id="bracelet" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">حالة السوار الذكي</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Bracelet visualization -->
+                                <div class="flex justify-center mb-6">
+                                    <div class="bracelet-wrapper w-48 h-48 relative">
+                                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                            <!-- Bracelet -->
+                                            <ellipse cx="100" cy="100" rx="85" ry="45" fill="none" stroke="#5D5CDE" stroke-width="4" />
+                                            <ellipse cx="100" cy="100" rx="75" ry="38" fill="#32CD32" fill-opacity="0.2" stroke="#32CD32" stroke-width="2" />
+                                            <!-- Screen -->
+                                            <rect x="80" y="75" width="40" height="50" rx="5" fill="#5D5CDE" />
+                                            <circle cx="100" cy="100" r="12" fill="#32CD32" />
+                                            <text x="100" y="104" text-anchor="middle" fill="white" font-size="12">SA</text>
+                                            <!-- Connection lines -->
+                                            <path d="M50 100 C 70 70, 130 70, 150 100" fill="none" stroke="rgba(93, 92, 222, 0.8)" stroke-width="2" stroke-dasharray="4 2" />
+                                            <path d="M50 100 C 70 130, 130 130, 150 100" fill="none" stroke="rgba(93, 92, 222, 0.8)" stroke-width="2" stroke-dasharray="4 2" />
+                                            <!-- Battery indicator -->
+                                            <rect x="90" y="130" width="20" height="10" rx="2" fill="#32CD32" />
+                                            <rect x="110" y="132" width="3" height="6" rx="1" fill="#32CD32" />
+                                        </svg>
+                                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-primary/20 dark:bg-primary/30 ping-animation"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Connection status -->
+                                <div class="text-center mb-6">
+                                    <span class="inline-block px-3 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-sm">
+                                        <i class="fas fa-check-circle ml-1"></i>
+                                        متصل ويعمل بشكل جيد
+                                    </span>
+                                </div>
+                                
+                                <!-- Bracelet stats -->
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                        <div class="flex items-center mb-2">
+                                            <i class="fas fa-battery-three-quarters text-green-600 dark:text-green-400 ml-2 text-xl"></i>
+                                            <span class="font-bold">حالة البطارية</span>
+                                        </div>
+                                        <div class="flex items-end">
+                                            <span class="text-3xl font-bold text-green-600 dark:text-green-400">82%</span>
+                                            <span class="text-gray-500 dark:text-gray-400 text-sm mr-1">باقي 3 أيام</span>
+                                        </div>
+                                        <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                            <div class="bg-green-500 h-full rounded-full" style="width: 82%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                        <div class="flex items-center mb-2">
+                                            <i class="fas fa-sun text-yellow-500 ml-2 text-xl"></i>
+                                            <span class="font-bold">شحن الطاقة الشمسية</span>
+                                        </div>
+                                        <div class="flex items-end">
+                                            <span class="text-3xl font-bold text-yellow-500">65%</span>
+                                            <span class="text-gray-500 dark:text-gray-400 text-sm mr-1">كفاءة</span>
+                                        </div>
+                                        <div class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                            <div class="bg-yellow-500 h-full rounded-full" style="width: 65%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Features status -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <h3 class="font-bold mb-3">حالة الميزات</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-map-marker-alt text-blue-500 ml-2"></i>
+                                                <span>نظام الموقع والتوجيه</span>
+                                            </div>
+                                            <span class="text-green-600 dark:text-green-400">نشط</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-credit-card text-purple-500 ml-2"></i>
+                                                <span>نظام الدفع الإلكتروني</span>
+                                            </div>
+                                            <span class="text-green-600 dark:text-green-400">نشط</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-vr-cardboard text-indigo-500 ml-2"></i>
+                                                <span>نظام الواقع المعزز</span>
+                                            </div>
+                                            <span class="text-green-600 dark:text-green-400">نشط</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-heartbeat text-red-500 ml-2"></i>
+                                                <span>نظام المراقبة الصحية</span>
+                                            </div>
+                                            <span class="text-green-600 dark:text-green-400">نشط</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-ambulance text-orange-500 ml-2"></i>
+                                                <span>نظام الطوارئ والإسعاف</span>
+                                            </div>
+                                            <span class="text-green-600 dark:text-green-400">نشط</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Device info -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <h3 class="font-bold mb-3">معلومات الجهاز</h3>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500 dark:text-gray-400">طراز السوار</span>
+                                            <span>Scoutiva S2 Premium</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500 dark:text-gray-400">الرقم التسلسلي</span>
+                                            <span>SCV-2034-85721</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500 dark:text-gray-400">إصدار البرنامج</span>
+                                            <span>v2.4.1</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500 dark:text-gray-400">آخر تحديث</span>
+                                            <span>14 يوليو 2034</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-20 text-center">
+                                    <button class="px-4 py-2 bg-primary text-white rounded-lg">
+                                        <i class="fas fa-sync-alt ml-1"></i>
+                                        تحديث البرامج
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-wallet"></i>
+                                    <span class="text-xs">المحفظة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Matches Screen -->
+                        <div id="matches" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">المباريات وتذاكري</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Tabs -->
+                                <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4 relative">
+                                    <button class="flex-1 py-3 font-medium border-b-2 border-primary text-primary" data-tab="upcoming">
+                                        المباريات القادمة
+                                    </button>
+                                    <button class="flex-1 py-3 font-medium text-gray-500 dark:text-gray-400" data-tab="myTickets">
+                                        تذاكري
+                                    </button>
+                                    <div class="tab-indicator" style="width: 50%; left: 0;"></div>
+                                </div>
+                                
+                                <!-- Upcoming matches tab content -->
+                                <div class="tab-content active" id="upcomingContent">
+                                    <!-- Today's match -->
+                                    <div class="mb-4">
+                                        <h3 class="font-bold text-sm text-gray-500 dark:text-gray-400 mb-2">اليوم</h3>
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-r-4 border-primary">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                        <span class="font-bold">🇸🇦</span>
+                                                    </div>
+                                                    <div class="font-bold">السعودية</div>
+                                                </div>
+                                                <div class="text-center text-xs">
+                                                    <div class="text-gray-600 dark:text-gray-400">8:00 م</div>
+                                                    <div class="inline-block px-2 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 mt-1">
+                                                        مباراة اليوم
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <div class="font-bold">البرازيل</div>
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                        <span class="font-bold">🇧🇷</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <div class="text-gray-600 dark:text-gray-400">ملعب الملك فهد الدولي</div>
+                                                <div>
+                                                    <span class="inline-block px-2 py-1 rounded-full bg-primary/10 text-primary">
+                                                        ربع النهائي
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 flex justify-center">
+                                                <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">
+                                                    <i class="fas fa-ticket-alt ml-1"></i>
+                                                    شراء التذكرة
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tomorrow's matches -->
+                                    <div class="mb-4">
+                                        <h3 class="font-bold text-sm text-gray-500 dark:text-gray-400 mb-2">غداً</h3>
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-3">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                        <span class="font-bold">🇦🇷</span>
+                                                    </div>
+                                                    <div class="font-bold">الأرجنتين</div>
+                                                </div>
+                                                <div class="text-center text-xs">
+                                                    <div class="text-gray-600 dark:text-gray-400">5:00 م</div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <div class="font-bold">فرنسا</div>
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                        <span class="font-bold">🇫🇷</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <div class="text-gray-600 dark:text-gray-400">ملعب الجوهرة</div>
+                                                <div>
+                                                    <span class="inline-block px-2 py-1 rounded-full bg-primary/10 text-primary">
+                                                        ربع النهائي
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                        <span class="font-bold">🇩🇪</span>
+                                                    </div>
+                                                    <div class="font-bold">ألمانيا</div>
+                                                </div>
+                                                <div class="text-center text-xs">
+                                                    <div class="text-gray-600 dark:text-gray-400">9:00 م</div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <div class="font-bold">إنجلترا</div>
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                        <span class="font-bold">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <div class="text-gray-600 dark:text-gray-400">ملعب الرياض الدولي</div>
+                                                <div>
+                                                    <span class="inline-block px-2 py-1 rounded-full bg-primary/10 text-primary">
+                                                        ربع النهائي
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Coming soon -->
+                                    <div>
+                                        <h3 class="font-bold text-sm text-gray-500 dark:text-gray-400 mb-2">20 يوليو</h3>
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                        <span class="font-bold">TBD</span>
+                                                    </div>
+                                                    <div class="font-bold">المتأهل 1</div>
+                                                </div>
+                                                <div class="text-center text-xs">
+                                                    <div class="text-gray-600 dark:text-gray-400">8:00 م</div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <div class="font-bold">المتأهل 2</div>
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                        <span class="font-bold">TBD</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex justify-between text-sm">
+                                                <div class="text-gray-600 dark:text-gray-400">ملعب الملك فهد الدولي</div>
+                                                <div>
+                                                    <span class="inline-block px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400">
+                                                        نصف النهائي
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- My tickets tab content -->
+                                <div class="tab-content hidden" id="myTicketsContent">
+                                    <!-- Active ticket -->
+                                    <div class="mb-6">
+                                        <h3 class="font-bold text-sm text-gray-500 dark:text-gray-400 mb-2">التذاكر النشطة</h3>
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 border-2 border-primary relative overflow-hidden">
+                                            <!-- Ticket pattern -->
+                                            <div class="absolute top-0 left-0 right-0 bottom-0 opacity-5">
+                                                <div class="absolute top-0 left-0 right-0 bottom-0" style="background-image: repeating-linear-gradient(45deg, #5D5CDE, #5D5CDE 10px, transparent 10px, transparent 20px);"></div>
+                                            </div>
+                                            
+                                            <div class="relative">
+                                                <!-- Match info -->
+                                                <div class="flex items-center justify-between mb-4">
+                                                    <div class="flex items-center">
+                                                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                            <span class="font-bold">🇸🇦</span>
+                                                        </div>
+                                                        <div>
+                                                            <div class="font-bold">السعودية</div>
+                                                            <div class="text-xs text-gray-500 dark:text-gray-400">vs البرازيل</div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-bold">اليوم - 8:00 م</div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">ملعب الملك فهد الدولي</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Ticket info -->
+                                                <div class="flex justify-between mb-4">
+                                                    <div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">مقعد</div>
+                                                        <div class="font-bold">C-23, صف 15</div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">بوابة</div>
+                                                        <div class="font-bold">بوابة 4</div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">نوع</div>
+                                                        <div class="font-bold">VIP</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- QR code -->
+                                                <div class="flex justify-center mb-3">
+                                                    <div class="w-32 h-32 bg-white p-2 rounded-lg">
+                                                        <div class="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNmZmZmZmYiPjwvcmVjdD48cmVjdCB4PSIyMCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjMwIiB5PSIyMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNDAiIHk9IjIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI1MCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSIyMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNzAiIHk9IjIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjExMCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEzMCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE1MCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE2MCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSIzMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNzAiIHk9IjMwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjExMCIgeT0iMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEyMCIgeT0iMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSI0MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNDAiIHk9IjQwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI1MCIgeT0iNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSI0MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNzAiIHk9IjQwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEzMCIgeT0iNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSI1MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNDAiIHk9IjUwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI1MCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSI1MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNzAiIHk9IjUwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjExMCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEyMCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEzMCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE1MCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSI2MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNDAiIHk9IjYwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI1MCIgeT0iNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSI2MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNzAiIHk9IjYwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEzMCIgeT0iNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSI3MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iNzAiIHk9IjcwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjExMCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEzMCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE1MCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSI5MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMzAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI0MCIgeT0iOTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSI5MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iODAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMjAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMzAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxNDAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxNTAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxNjAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxNzAiIHk9IjkwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI2MCIgeT0iMTAwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI4MCIgeT0iMTAwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iMTAwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMTAiIHk9IjEwMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTIwIiB5PSIxMDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE0MCIgeT0iMTAwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIzMCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI0MCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI2MCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI3MCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI4MCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMTAiIHk9IjExMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTIwIiB5PSIxMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE2MCIgeT0iMTEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIyMCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI1MCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI2MCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI3MCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI4MCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMDAiIHk9IjEyMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTEwIiB5PSIxMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEzMCIgeT0iMTIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxNDAiIHk9IjEyMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTcwIiB5PSIxMjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjMwIiB5PSIxMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjQwIiB5PSIxMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjUwIiB5PSIxMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjgwIiB5PSIxMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjExMCIgeT0iMTMwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMzAiIHk9IjEzMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTYwIiB5PSIxMzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjMwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjUwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjcwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjkwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjExMCIgeT0iMTQwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMzAiIHk9IjE0MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTUwIiB5PSIxNDAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE3MCIgeT0iMTQwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIzMCIgeT0iMTUwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI1MCIgeT0iMTUwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI4MCIgeT0iMTUwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMDAiIHk9IjE1MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTQwIiB5PSIxNTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjIwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjMwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjQwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjUwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjYwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjcwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjEwMCIgeT0iMTYwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMTAiIHk9IjE2MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTIwIiB5PSIxNjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE2MCIgeT0iMTYwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIyMCIgeT0iMTcwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI3MCIgeT0iMTcwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSI5MCIgeT0iMTcwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxMTAiIHk9IjE3MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PHJlY3QgeD0iMTMwIiB5PSIxNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMDAwMCI+PC9yZWN0PjxyZWN0IHg9IjE1MCIgeT0iMTcwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwMDAiPjwvcmVjdD48cmVjdCB4PSIxNzAiIHk9IjE3MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+PC9zdmc+')]"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Actions -->
+                                <div class="text-center">
+                                    <button class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg text-sm mb-2">
+                                        <i class="fas fa-sync-alt ml-1"></i>
+                                        نقل إلى السوار الذكي
+                                    </button>
+                                    <div class="text-xs text-center text-gray-500 dark:text-gray-400">
+                                        تم نقل التذكرة بنجاح إلى سوارك الذكي
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                    
+                                    <!-- Past ticket -->
+                                    <div>
+                                        <h3 class="font-bold text-sm text-gray-500 dark:text-gray-400 mb-2">التذاكر السابقة</h3>
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 opacity-70">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                                        <span class="font-bold">🇸🇦</span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-bold">السعودية</div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">vs إسبانيا</div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-bold">10 يوليو</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">5:00 م</div>
+                                                </div>
+                                            </div>
+                                            <div class="border-t border-gray-200 dark:border-gray-700 pt-2 flex justify-between text-sm">
+                                                <div class="text-gray-500 dark:text-gray-400">
+                                                    <span class="inline-block ml-1">2</span>
+                                                    <span class="inline-block mr-1">-</span>
+                                                    <span class="inline-block">1</span>
+                                                </div>
+                                                <div>
+                                                    <span class="inline-block px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs">
+                                                        انتهت
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-wallet"></i>
+                                    <span class="text-xs">المحفظة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Screen -->
+                        <div id="navigation" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">التوجيه وإيجاد المقعد</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Match info -->
+                                <div class="flex items-center justify-between mb-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-2">
+                                            <span class="font-bold">🇸🇦</span>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">السعودية vs البرازيل</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">اليوم، 8:00 م</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="inline-block px-3 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
+                                            <i class="fas fa-ticket-alt ml-1"></i>
+                                            لديك تذكرة
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Your seat info -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <h3 class="font-bold mb-2">معلومات مقعدك</h3>
+                                    <div class="grid grid-cols-3 gap-3 text-center">
+                                        <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">المنطقة</div>
+                                            <div class="font-bold">C</div>
+                                        </div>
+                                        <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">الصف</div>
+                                            <div class="font-bold">15</div>
+                                        </div>
+                                        <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">المقعد</div>
+                                            <div class="font-bold">23</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Stadium Map -->
+                                <div class="mb-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="font-bold">خريطة الملعب</h3>
+                                        <div>
+                                            <button id="zoomInBtn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                            <button id="zoomOutBtn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-2">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="stadium-map relative bg-blue-50 dark:bg-blue-900/20 rounded-xl h-72 overflow-hidden border border-gray-200 dark:border-gray-700">
+                                        <!-- Stadium Visualization -->
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="relative w-full max-w-sm">
+                                                <!-- Stadium outline -->
+                                                <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                                                    <ellipse cx="200" cy="150" rx="180" ry="120" fill="none" stroke="#ccc" stroke-width="2" />
+                                                    <ellipse cx="200" cy="150" rx="150" ry="90" fill="none" stroke="#ccc" stroke-width="2" />
+                                                    <ellipse cx="200" cy="150" rx="120" ry="60" fill="none" stroke="#ccc" stroke-width="2" />
+                                                    <ellipse cx="200" cy="150" rx="80" ry="40" fill="#27ae60" fill-opacity="0.3" stroke="#27ae60" stroke-width="1" />
+                                                    <rect x="140" y="145" width="120" height="10" fill="#fff" stroke="#ccc" stroke-width="1" />
+                                                    <!-- Sections Labels -->
+                                                    <text x="200" y="40" text-anchor="middle" fill="#888" font-size="12">A</text>
+                                                    <text x="300" y="150" text-anchor="middle" fill="#888" font-size="12">B</text>
+                                                    <text x="200" y="260" text-anchor="middle" fill="#888" font-size="12">C</text>
+                                                    <text x="100" y="150" text-anchor="middle" fill="#888" font-size="12">D</text>
+                                                    <!-- Your seat highlight -->
+                                                    <circle cx="200" cy="230" r="8" fill="#5D5CDE" class="ping-animation" />
+                                                    <text x="200" y="230" text-anchor="middle" fill="#fff" font-size="8">أنت</text>
+                                                </svg>
+                                                
+                                                <!-- Seat visualization -->
+                                                <div id="seatVisualization" class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+                                                    <!-- Seats are dynamically generated -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Points of interest -->
+                                        <div class="map-marker" style="top: 30%; left: 70%;">
+                                            <div class="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-white z-10 relative">
+                                                <i class="fas fa-utensils text-xs"></i>
+                                            </div>
+                                            <div class="marker-ping"></div>
+                                        </div>
+                                        
+                                        <div class="map-marker" style="top: 60%; left: 25%;">
+                                            <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white z-10 relative">
+                                                <i class="fas fa-restroom text-xs"></i>
+                                            </div>
+                                            <div class="marker-ping"></div>
+                                        </div>
+                                        
+                                        <div class="map-marker" style="top: 40%; left: 20%;">
+                                            <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white z-10 relative">
+                                                <i class="fas fa-door-open text-xs"></i>
+                                            </div>
+                                            <div class="marker-ping"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Navigation Options -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-20">
+                                    <h3 class="font-bold mb-3">توجيه السوار الذكي</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                        سيقوم السوار الذكي بتوجيهك إلى مقعدك من خلال الاهتزازات والإشارات الضوئية
+                                    </p>
+                                    <div class="flex">
+                                        <button id="startNavBtn" class="flex-1 py-2 px-4 bg-primary text-white rounded-lg ml-2">
+                                            <i class="fas fa-map-marker-alt ml-1"></i>
+                                            بدء التوجيه
+                                        </button>
+                                        <button class="flex-1 py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg">
+                                            <i class="fas fa-info-circle ml-1"></i>
+                                            تفاصيل إضافية
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Navigation Status Overlay -->
+                                <div id="navStatus" class="hidden fixed inset-x-0 bottom-16 p-4 animate-slide-up">
+                                    <div class="bg-primary text-white rounded-xl p-4 shadow-lg">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <div class="font-bold">جاري التوجيه إلى المقعد</div>
+                                            <button id="cancelNavBtn" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                                <i class="fas fa-times text-white"></i>
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center ml-3">
+                                                <i class="fas fa-walking text-white"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex justify-between text-sm mb-1">
+                                                    <span>تتبع اهتزازات السوار للوصول للمقعد</span>
+                                                    <span>2 دقيقة</span>
+                                                </div>
+                                                <div class="bg-white/20 h-1.5 rounded-full overflow-hidden">
+                                                    <div class="bg-white h-full rounded-full progress-animation"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span class="text-xs">الخريطة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Screen -->
+                        <div id="payment" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">الدفع الالكتروني</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Account Balance -->
+                                <div class="bg-primary rounded-xl p-5 text-white shadow-lg mb-6">
+                                    <div class="text-center">
+                                        <div class="text-sm opacity-80 mb-1">رصيدك الحالي</div>
+                                        <div class="text-3xl font-bold mb-2">320 ريال</div>
+                                        <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs">
+                                            <i class="fas fa-sync-alt ml-1"></i>
+                                            تم التحديث منذ 5 دقائق
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-around mt-4">
+                                        <button class="flex flex-col items-center">
+                                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mb-1">
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                            <span class="text-xs">إضافة رصيد</span>
+                                        </button>
+                                        <button class="flex flex-col items-center">
+                                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mb-1">
+                                                <i class="fas fa-history"></i>
+                                            </div>
+                                            <span class="text-xs">السجل</span>
+                                        </button>
+                                        <button class="flex flex-col items-center">
+                                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mb-1">
+                                                <i class="fas fa-qrcode"></i>
+                                            </div>
+                                            <span class="text-xs">مشاركة</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bracelet payment -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6">
+                                    <h3 class="font-bold mb-4 text-center">الدفع بالسوار الذكي</h3>
+                                    
+                                    <div id="paymentDemo" class="relative mb-4">
+                                        <div class="payment-circle">
+                                            <i class="fas fa-hand-pointer text-2xl"></i>
+                                            <div class="payment-ring"></div>
+                                        </div>
+                                        
+                                        <div id="paymentSuccess" class="hidden text-center text-green-600 dark:text-green-400 font-bold">
+                                            <div class="mb-2"><i class="fas fa-check-circle text-3xl"></i></div>
+                                            تمت عملية الدفع بنجاح!
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-3">
+                                        قم بالنقر على أيقونة الدفع أعلاه لمحاكاة استخدام السوار لإجراء عملية دفع
+                                    </p>
+                                    
+                                    <button id="simulatePaymentBtn" class="w-full py-3 bg-primary text-white rounded-lg">
+                                        <i class="fas fa-credit-card ml-1"></i>
+                                        محاكاة الدفع باستخدام السوار
+                                    </button>
+                                </div>
+                                
+                                <!-- Recent Transactions -->
+                                <h3 class="font-bold mb-3">آخر المعاملات</h3>
+                                <div class="space-y-3 mb-20">
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 flex items-start">
+                                        <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center ml-3 shrink-0">
+                                            <i class="fas fa-mug-hot text-green-600 dark:text-green-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <div class="font-bold">كوفي شوب ستاديوم</div>
+                                                <div class="text-red-600 dark:text-red-400 font-bold">-28 ريال</div>
+                                            </div>
+                                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                <div>اليوم، 4:30 م</div>
+                                                <div>قهوة + كيك</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 flex items-start">
+                                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center ml-3 shrink-0">
+                                            <i class="fas fa-tshirt text-blue-600 dark:text-blue-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <div class="font-bold">متجر المنتخب الرسمي</div>
+                                                <div class="text-red-600 dark:text-red-400 font-bold">-150 ريال</div>
+                                            </div>
+                                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                <div>اليوم، 2:15 م</div>
+                                                <div>قميص المنتخب</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 flex items-start">
+                                        <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center ml-3 shrink-0">
+                                            <i class="fas fa-plus text-green-600 dark:text-green-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between">
+                                                <div class="font-bold">شحن الرصيد</div>
+                                                <div class="text-green-600 dark:text-green-400 font-bold">+500 ريال</div>
+                                            </div>
+                                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                <div>12 يوليو، 10:45 ص</div>
+                                                <div>بطاقة ائتمان</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-wallet"></i>
+                                    <span class="text-xs">المحفظة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AR Mode Screen -->
+                        <div id="ar" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">الواقع المعزز</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- AR Explanation -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6">
+                                    <h3 class="font-bold mb-3 text-center">تجربة الواقع المعزز</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                        يقدم السوار الذكي تجربة واقع معزز فريدة تتيح لك رؤية إحصائيات اللاعبين والفرق في الوقت الحقيقي أثناء المباراة عند رفع يدك نحو الملعب
+                                    </p>
+                                    <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                                        <!-- Stadium background -->
+                                        <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full absolute inset-0">
+                                            <rect width="400" height="200" fill="#27ae60" fill-opacity="0.3" />
+                                            <ellipse cx="200" cy="180" rx="180" ry="60" fill="#fff" fill-opacity="0.1" />
+                                            <ellipse cx="200" cy="180" rx="150" ry="40" fill="#fff" fill-opacity="0.1" />
+                                            <rect x="30" y="30" width="340" height="140" rx="5" fill="none" stroke="#fff" stroke-opacity="0.2" />
+                                            <line x1="200" y1="30" x2="200" y2="170" stroke="#fff" stroke-opacity="0.2" />
+                                            <circle cx="200" cy="100" r="40" fill="none" stroke="#fff" stroke-opacity="0.2" />
+                                        </svg>
+                                        
+                                        <!-- AR Demo overlay button -->
+                                        <button id="arDemoButton" class="z-10 px-6 py-2.5 bg-primary text-white rounded-lg">
+                                            <i class="fas fa-vr-cardboard ml-1"></i>
+                                            عرض تجربة AR
+                                        </button>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary">
+                                            <i class="fas fa-wand-magic-sparkles ml-1"></i>
+                                            متوفر في النسخة المميزة
+                                        </span>
+                                        <span class="text-gray-500 dark:text-gray-400">
+                                            <i class="fas fa-check-circle ml-1 text-green-500"></i>
+                                            متصل
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- AR Features -->
+                                <h3 class="font-bold mb-3">ماذا يمكنك رؤيته بالواقع المعزز</h3>
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 feature-card">
+                                        <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-2">
+                                            <i class="fas fa-chart-line text-blue-600 dark:text-blue-400"></i>
+                                        </div>
+                                        <h4 class="font-bold text-sm mb-1">إحصائيات حية</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            إحصائيات مباشرة للمباراة واللاعبين أثناء اللعب
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 feature-card">
+                                        <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mb-2">
+                                            <i class="fas fa-user text-purple-600 dark:text-purple-400"></i>
+                                        </div>
+                                        <h4 class="font-bold text-sm mb-1">معلومات اللاعبين</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            التاريخ الرياضي والإنجازات ومعلومات عن كل لاعب
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 feature-card">
+                                        <div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center mb-2">
+                                            <i class="fas fa-film text-orange-600 dark:text-orange-400"></i>
+                                        </div>
+                                        <h4 class="font-bold text-sm mb-1">إعادة اللقطات</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            مشاهدة إعادة لأهم لقطات المباراة من زوايا متعددة
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 feature-card">
+                                        <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-2">
+                                            <i class="fas fa-bullhorn text-green-600 dark:text-green-400"></i>
+                                        </div>
+                                        <h4 class="font-bold text-sm mb-1">تعليق وتحليل</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            استماع للتعليق وتحليل المباراة باللغة التي تفضلها
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- AR Tutorial -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-20">
+                                    <h3 class="font-bold mb-3">كيفية استخدام الواقع المعزز</h3>
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0 ml-3">
+                                            <div class="text-primary font-bold">1</div>
+                                        </div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                                            ارفع يدك التي ترتدي فيها السوار نحو الملعب
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0 ml-3">
+                                            <div class="text-primary font-bold">2</div>
+                                        </div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                                            انتظر لحظة حتى يتعرف السوار على اللاعب أو المنطقة
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0 ml-3">
+                                            <div class="text-primary font-bold">3</div>
+                                        </div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                                            استمتع بمشاهدة البيانات والإحصائيات المباشرة المعروضة على السوار
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- AR Overlay for demo -->
+                                <div id="arOverlay" class="ar-overlay">
+                                    <div class="w-full max-w-sm bg-black/80 backdrop-blur-sm p-4 rounded-xl text-white">
+                                        <div class="mb-4 flex justify-between items-center">
+                                            <h3 class="font-bold">معلومات اللاعب</h3>
+                                            <button id="closeArBtn" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center ml-3">
+                                                <span class="font-bold text-2xl">10</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-xl">محمد الشهري</h4>
+                                                <p class="text-sm opacity-80">المنتخب السعودي</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-3 gap-2 mb-4">
+                                            <div class="bg-white/20 p-2 rounded text-center">
+                                                <div class="font-bold">2</div>
+                                                <div class="text-xs opacity-80">أهداف</div>
+                                            </div>
+                                            <div class="bg-white/20 p-2 rounded text-center">
+                                                <div class="font-bold">85%</div>
+                                                <div class="text-xs opacity-80">تمريرات</div>
+                                            </div>
+                                            <div class="bg-white/20 p-2 rounded text-center">
+                                                <div class="font-bold">3</div>
+                                                <div class="text-xs opacity-80">مراوغات</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>التسديدات</span>
+                                                <span>5</span>
+                                            </div>
+                                            <div class="bg-white/20 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-primary h-full rounded-full" style="width: 60%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-sm mb-1">
+                                                <span>التمريرات الناجحة</span>
+                                                <span>32/28</span>
+                                            </div>
+                                            <div class="bg-white/20 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-primary h-full rounded-full" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <button class="w-full py-2 bg-primary rounded-lg text-sm">
+                                                <i class="fas fa-film ml-1"></i>
+                                                عرض أبرز لقطات اللاعب
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-vr-cardboard"></i>
+                                    <span class="text-xs">الواقع المعزز</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Health Monitoring Screen -->
+                        <div id="health" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">المؤشرات الصحية</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Health overview -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 mb-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="font-bold">نظرة عامة على صحتك</h3>
+                                        <span class="inline-block px-3 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs">
+                                            <i class="fas fa-check-circle ml-1"></i>
+                                            جيدة
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                        يقوم السوار الذكي بمراقبة مؤشراتك الصحية الأساسية باستمرار لضمان سلامتك
+                                    </p>
+                                    <div class="flex items-center justify-center mb-2">
+                                        <div class="w-24 h-24 rounded-full border-4 border-primary flex items-center justify-center">
+                                            <i class="fas fa-heartbeat text-primary text-3xl heartbeat"></i>
+                                        </div>
+                                    </div>
+                                    <div class="text-center text-gray-600 dark:text-gray-400 text-sm">
+                                        تم تحديث البيانات قبل دقيقة واحدة
+                                    </div>
+                                </div>
+                                
+                                <!-- Health stats -->
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <!-- Heart rate -->
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-heartbeat text-red-500 ml-2"></i>
+                                            <span class="font-bold">معدل ضربات القلب</span>
+                                        </div>
+                                        <div class="flex justify-between items-end">
+                                            <span class="text-3xl font-bold">78</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">نبضة/دقيقة</span>
+                                        </div>
+                                        <div class="mt-4 flex items-end h-10 justify-between">
+                                            <!-- Heart rate visualization -->
+                                            <div class="heart-rate-bar" style="--delay: 1"></div>
+                                            <div class="heart-rate-bar" style="--delay: 2"></div>
+                                            <div class="heart-rate-bar" style="--delay: 3"></div>
+                                            <div class="heart-rate-bar" style="--delay: 4"></div>
+                                            <div class="heart-rate-bar" style="--delay: 5"></div>
+                                            <div class="heart-rate-bar" style="--delay: 6"></div>
+                                            <div class="heart-rate-bar" style="--delay: 7"></div>
+                                            <div class="heart-rate-bar" style="--delay: 8"></div>
+                                            <div class="heart-rate-bar" style="--delay: 9"></div>
+                                            <div class="heart-rate-bar" style="--delay: 10"></div>
+                                            <div class="heart-rate-bar" style="--delay: 0"></div>
+                                            <div class="heart-rate-bar" style="--delay: 2"></div>
+                                            <div class="heart-rate-bar" style="--delay: 3"></div>
+                                            <div class="heart-rate-bar" style="--delay: 1"></div>
+                                            <div class="heart-rate-bar" style="--delay: 4"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Temperature -->
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-temperature-high text-orange-500 ml-2"></i>
+                                            <span class="font-bold">درجة الحرارة</span>
+                                        </div>
+                                        <div class="flex justify-between items-end">
+                                            <span class="text-3xl font-bold">36.7</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">درجة مئوية</span>
+                                        </div>
+                                        <div class="mt-3 bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+                                            <div class="bg-orange-500 h-full rounded-full" style="width: 35%"></div>
+                                        </div>
+                                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            <span>35.0</span>
+                                            <span>37.5</span>
+                                            <span>40.0</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Oxygen level -->
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-lungs text-blue-500 ml-2"></i>
+                                            <span class="font-bold">مستوى الأكسجين</span>
+                                        </div>
+                                        <div class="flex justify-between items-end">
+                                            <span class="text-3xl font-bold">98</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                                        </div>
+                                        <div class="mt-3 bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+                                            <div class="bg-blue-500 h-full rounded-full" style="width: 98%"></div>
+                                        </div>
+                                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            <span>90</span>
+                                            <span>95</span>
+                                            <span>100</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Hydration -->
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-tint text-blue-400 ml-2"></i>
+                                            <span class="font-bold">مستوى الترطيب</span>
+                                        </div>
+                                        <div class="flex justify-between items-end">
+                                            <span class="text-3xl font-bold">65</span>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                                        </div>
+                                        <div class="mt-3 bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+                                            <div class="bg-blue-400 h-full rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            <span>30</span>
+                                            <span>60</span>
+                                            <span>90</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Health alerts -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <h3 class="font-bold mb-3">تنبيهات صحية</h3>
+                                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-3">
+                                        <div class="flex items-start">
+                                            <i class="fas fa-exclamation-triangle text-yellow-500 mt-0.5 ml-2"></i>
+                                            <div>
+                                                <div class="font-bold text-sm">تذكير بالترطيب</div>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">
+                                                    مستوى الترطيب لديك منخفض، يُنصح بشرب الماء
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                                        <div class="flex items-start">
+                                            <i class="fas fa-info-circle text-gray-500 mt-0.5 ml-2"></i>
+                                            <div>
+                                                <div class="font-bold text-sm">حالة جيدة</div>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">
+                                                    مؤشراتك الحيوية الأخرى ضمن المعدلات الطبيعية
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Preferences -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-20">
+                                    <h3 class="font-bold mb-3">إعدادات المراقبة الصحية</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-bell text-primary ml-2"></i>
+                                                <span>تنبيهات حالة الطوارئ</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="emergencyToggle" class="sr-only" checked />
+                                                <label for="emergencyToggle" class="block w-11 h-6 rounded-full bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-share-alt text-primary ml-2"></i>
+                                                <span>مشاركة البيانات الصحية مع الأطباء</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="shareToggle" class="sr-only" checked />
+                                                <label for="shareToggle" class="block w-11 h-6 rounded-full bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-heartbeat text-primary ml-2"></i>
+                                                <span>مراقبة مستمرة لمعدل ضربات القلب</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="heartRateToggle" class="sr-only" checked />
+                                                <label for="heartRateToggle" class="block w-11 h-6 rounded-full bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-heartbeat"></i>
+                                    <span class="text-xs">الصحة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Emergency Screen -->
+                        <div id="emergency" class="app-screen">
+                            <div class="bg-red-600 text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">الإسعاف والطوارئ</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- Emergency button -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                                    <h3 class="font-bold mb-3 text-center">طلب المساعدة الطارئة</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
+                                        في حالة الطوارئ، اضغط على الزر أدناه لطلب المساعدة الفورية. سيتم إرسال موقعك الدقيق إلى أقرب فريق طبي.
+                                    </p>
+                                    <div class="flex justify-center mb-3">
+                                        <button id="emergencyBtn" class="w-32 h-32 rounded-full bg-red-600 text-white flex flex-col items-center justify-center emergency-button">
+                                            <i class="fas fa-ambulance text-3xl mb-2"></i>
+                                            <span class="font-bold">طوارئ</span>
+                                        </button>
+                                    </div>
+                                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">
+                                        اضغط للحالات الطارئة فقط
+                                    </div>
+                                </div>
+                                
+                                <!-- Emergency options -->
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 text-center">
+                                        <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mx-auto mb-2">
+                                            <i class="fas fa-first-aid text-blue-600 dark:text-blue-400 text-2xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-sm mb-1">الإسعافات الأولية</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            دليل سريع للإسعافات الأولية للحالات الشائعة
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 text-center">
+                                        <div class="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-2">
+                                            <i class="fas fa-phone-alt text-green-600 dark:text-green-400 text-2xl"></i>
+                                        </div>
+                                        <h4 class="font-bold text-sm mb-1">اتصال مباشر</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                                            اتصال مباشر بالخدمات الطبية في الملعب
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Health conditions -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-4">
+                                    <h3 class="font-bold mb-3">الحالات الصحية المسجلة</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                        ستُشارك هذه المعلومات تلقائياً مع فريق الطوارئ في حالة طلب المساعدة
+                                    </p>
+                                    
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-capsules text-purple-500 ml-2"></i>
+                                                <span>حساسية من البنسلين</span>
+                                            </div>
+                                            <i class="fas fa-chevron-left text-gray-400"></i>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-heartbeat text-red-500 ml-2"></i>
+                                                <span>ضغط دم مرتفع</span>
+                                            </div>
+                                            <i class="fas fa-chevron-left text-gray-400"></i>
+                                        </div>
+                                        
+                                        <button class="flex items-center justify-center w-full p-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-400">
+                                            <i class="fas fa-plus ml-1"></i>
+                                            <span>إضافة حالة صحية</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Emergency contacts -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-20">
+                                    <h3 class="font-bold mb-3">جهات اتصال الطوارئ</h3>
+                                    
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-3">
+                                                    <i class="fas fa-user text-gray-500"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold">أحمد محمد</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">الأخ</div>
+                                                </div>
+                                            </div>
+                                            <button class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                                                <i class="fas fa-phone-alt text-green-600 dark:text-green-400"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-3">
+                                                    <i class="fas fa-user text-gray-500"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold">سارة علي</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">الزوجة</div>
+                                                </div>
+                                            </div>
+                                            <button class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                                                <i class="fas fa-phone-alt text-green-600 dark:text-green-400"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <button class="flex items-center justify-center w-full p-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-400">
+                                            <i class="fas fa-plus ml-1"></i>
+                                            <span>إضافة جهة اتصال</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Emergency Call Modal -->
+                                <div id="emergencyModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+                                    <div class="bg-white dark:bg-gray-800 w-4/5 rounded-xl p-5 animate-slide-up">
+                                        <div class="text-center">
+                                            <div class="w-20 h-20 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mx-auto mb-4">
+                                                <i class="fas fa-ambulance text-red-600 dark:text-red-400 text-3xl"></i>
+                                            </div>
+                                            <h3 class="text-xl font-bold mb-2">جاري الاتصال بالطوارئ</h3>
+                                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                                                تم تحديد موقعك وإرسال المعلومات الصحية المسجلة. سيصل فريق الطوارئ قريباً.
+                                            </p>
+                                            <div class="flex justify-center items-center mb-4">
+                                                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                                                <span class="text-red-500 font-bold">جاري الاتصال...</span>
+                                            </div>
+                                            <button id="cancelEmergencyBtn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg">
+                                                إلغاء الطلب
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-ambulance"></i>
+                                    <span class="text-xs">الطوارئ</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Settings Screen -->
+                        <div id="settings" class="app-screen">
+                            <div class="bg-primary text-white p-4">
+                                <div class="flex items-center">
+                                    <button class="back-button ml-2">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                    <h1 class="text-xl font-bold">الإعدادات</h1>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                <!-- User Profile -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center ml-4">
+                                            <i class="fas fa-user text-gray-400 text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-lg">أحمد محمد</h3>
+                                            <p class="text-gray-600 dark:text-gray-400">ahmed@example.com</p>
+                                        </div>
+                                    </div>
+                                    <button class="w-full py-2 bg-primary text-white rounded-lg">
+                                        <i class="fas fa-edit ml-1"></i>
+                                        تعديل الملف الشخصي
+                                    </button>
+                                </div>
+                                
+                                <!-- App Settings -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6">
+                                    <h3 class="font-bold mb-3">إعدادات التطبيق</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-bell text-primary ml-2"></i>
+                                                <span>الإشعارات</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="notifToggle" class="sr-only" checked />
+                                                <label for="notifToggle" class="block w-11 h-6 rounded-full bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-language text-primary ml-2"></i>
+                                                <span>اللغة</span>
+                                            </div>
+                                            <div class="flex items-center text-gray-600 dark:text-gray-400">
+                                                <span>العربية</span>
+                                                <i class="fas fa-chevron-left mr-1"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-moon text-primary ml-2"></i>
+                                                <span>الوضع الداكن</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="darkModeToggleSettings" class="sr-only" />
+                                                <label for="darkModeToggleSettings" class="block w-11 h-6 rounded-full bg-gray-300 dark:bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform translate-x-0 dark:translate-x-5"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-map-marker-alt text-primary ml-2"></i>
+                                                <span>تفعيل الموقع</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="locationToggle" class="sr-only" checked />
+                                                <label for="locationToggle" class="block w-11 h-6 rounded-full bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bracelet Settings -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6">
+                                    <h3 class="font-bold mb-3">إعدادات السوار الذكي</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-wifi text-primary ml-2"></i>
+                                                <span>اتصال بلوتوث</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="bluetoothToggle" class="sr-only" checked />
+                                                <label for="bluetoothToggle" class="block w-11 h-6 rounded-full bg-primary cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-hand-pointer text-primary ml-2"></i>
+                                                <span>قوة الاهتزاز</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="range" min="1" max="5" value="3" class="w-20" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-tachometer-alt text-primary ml-2"></i>
+                                                <span>وضع توفير الطاقة</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="checkbox" id="powerSaveToggle" class="sr-only" />
+                                                <label for="powerSaveToggle" class="block w-11 h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"></label>
+                                                <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform transform"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-sync-alt text-primary ml-2"></i>
+                                                <span>تحديث السوار</span>
+                                            </div>
+                                            <button class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
+                                                تفحص
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Account Settings -->
+                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-20">
+                                    <h3 class="font-bold mb-3">إعدادات الحساب</h3>
+                                    <div class="space-y-2">
+                                        <button class="flex items-center w-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                            <i class="fas fa-key text-primary ml-2"></i>
+                                            <span>تغيير كلمة المرور</span>
+                                        </button>
+                                        
+                                        <button class="flex items-center w-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                            <i class="fas fa-shield-alt text-primary ml-2"></i>
+                                            <span>الخصوصية والأمان</span>
+                                        </button>
+                                        
+                                        <button class="flex items-center w-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                            <i class="fas fa-question-circle text-primary ml-2"></i>
+                                            <span>مركز المساعدة</span>
+                                        </button>
+                                        
+                                        <button class="flex items-center w-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                            <i class="fas fa-info-circle text-primary ml-2"></i>
+                                            <span>عن التطبيق</span>
+                                        </button>
+                                        
+                                        <button class="flex items-center w-full p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                                            <i class="fas fa-sign-out-alt ml-2"></i>
+                                            <span>تسجيل الخروج</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom navigation -->
+                            <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 px-4 flex justify-around">
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-home"></i>
+                                    <span class="text-xs">الرئيسية</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-futbol"></i>
+                                    <span class="text-xs">المباريات</span>
+                                </div>
+                                <div class="flex flex-col items-center text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-wallet"></i>
+                                    <span class="text-xs">المحفظة</span>
+                                </div>
+                                <div class="flex flex-col items-center text-primary">
+                                    <i class="fas fa-user"></i>
+                                    <span class="text-xs">حسابي</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode functionality
+        function initDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const settingsDarkModeToggle = document.getElementById('darkModeToggleSettings');
+            const phoneFrame = document.getElementById('phoneFrame');
+            const screen = document.getElementById('screen');
+            
+            // Check for user preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+                phoneFrame.classList.add('dark');
+                screen.classList.add('dark:bg-gray-900');
+                if (settingsDarkModeToggle) {
+                    settingsDarkModeToggle.checked = true;
+                }
+            }
+            
+            // Listen for changes to the prefers-color-scheme media query
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                if (event.matches) {
+                    document.documentElement.classList.add('dark');
+                    phoneFrame.classList.add('dark');
+                    screen.classList.add('dark:bg-gray-900');
+                    if (settingsDarkModeToggle) {
+                        settingsDarkModeToggle.checked = true;
+                    }
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    phoneFrame.classList.remove('dark');
+                    screen.classList.remove('dark:bg-gray-900');
+                    if (settingsDarkModeToggle) {
+                        settingsDarkModeToggle.checked = false;
+                    }
+                }
+            });
+            
+            // Toggle dark mode with button
+            darkModeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                phoneFrame.classList.toggle('dark');
+                screen.classList.toggle('dark:bg-gray-900');
+                if (settingsDarkModeToggle) {
+                    settingsDarkModeToggle.checked = document.documentElement.classList.contains('dark');
+                }
+            });
+            
+            // Settings dark mode toggle
+            if (settingsDarkModeToggle) {
+                settingsDarkModeToggle.addEventListener('change', () => {
+                    if (settingsDarkModeToggle.checked) {
+                        document.documentElement.classList.add('dark');
+                        phoneFrame.classList.add('dark');
+                        screen.classList.add('dark:bg-gray-900');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        phoneFrame.classList.remove('dark');
+                        screen.classList.remove('dark:bg-gray-900');
+                    }
+                });
+            }
+        }
+        
+        // Screen navigation
+        function initScreenNavigation() {
+            const screenButtons = document.querySelectorAll('.screen-button');
+            const appScreens = document.querySelectorAll('.app-screen');
+            const backButtons = document.querySelectorAll('.back-button');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Set active class for buttons
+            function setActiveButton(targetScreen) {
+                screenButtons.forEach(button => {
+                    if (button.dataset.screen === targetScreen) {
+                        button.classList.add('bg-primary/10', 'dark:bg-primary/20', 'text-primary');
+                        button.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                    } else {
+                        button.classList.remove('bg-primary/10', 'dark:bg-primary/20', 'text-primary');
+                        button.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                    }
+                });
+            }
+            
+            // Show screen function
+            function showScreen(screenId) {
+                appScreens.forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                const targetScreen = document.getElementById(screenId);
+                if (targetScreen) {
+                    targetScreen.classList.add('active');
+                    setActiveButton(screenId);
+                }
+            }
+            
+            // Add click event to screen buttons
+            screenButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const screenId = button.dataset.screen;
+                    showScreen(screenId);
+                });
+            });
+            
+            // Back button functionality (go to home)
+            backButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    showScreen('home');
+                });
+            });
+            
+            // Login button
+            if (loginBtn) {
+                loginBtn.addEventListener('click', () => {
+                    showScreen('home');
+                });
+            }
+        }
+        
+        // Match tabs functionality
+        function initMatchTabs() {
+            const tabButtons = document.querySelectorAll('[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabIndicator = document.querySelector('.tab-indicator');
+            
+            function setActiveTab(tabId) {
+                // Update buttons style
+                tabButtons.forEach(btn => {
+                    if (btn.dataset.tab === tabId) {
+                        btn.classList.add('border-primary', 'text-primary');
+                        btn.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    } else {
+                        btn.classList.remove('border-primary', 'text-primary');
+                        btn.classList.add('text-gray-500', 'dark:text-gray-400');
+                    }
+                });
+                
+                // Show active content
+                tabContents.forEach(content => {
+                    if (content.id === `${tabId}Content`) {
+                        content.classList.remove('hidden');
+                        content.classList.add('active');
+                    } else {
+                        content.classList.add('hidden');
+                        content.classList.remove('active');
+                    }
+                });
+                
+                // Move the indicator
+                if (tabIndicator) {
+                    const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
+                    if (activeButton) {
+                        if (tabId === 'upcoming') {
+                            tabIndicator.style.left = '0';
+                        } else {
+                            tabIndicator.style.left = '50%';
+                        }
+                    }
+                }
+            }
+            
+            // Add click event to tab buttons
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+                    setActiveTab(tabId);
+                });
+            });
+        }
+        
+        // Navigation demo
+        function initNavigationDemo() {
+            const startNavBtn = document.getElementById('startNavBtn');
+            const cancelNavBtn = document.getElementById('cancelNavBtn');
+            const navStatus = document.getElementById('navStatus');
+            
+            if (startNavBtn && navStatus) {
+                startNavBtn.addEventListener('click', () => {
+                    navStatus.classList.remove('hidden');
+                    createSeats();
+                });
+            }
+            
+            if (cancelNavBtn && navStatus) {
+                cancelNavBtn.addEventListener('click', () => {
+                    navStatus.classList.add('hidden');
+                });
+            }
+            
+            // Create seats visualization for the stadium
+            function createSeats() {
+                const seatContainer = document.getElementById('seatVisualization');
+                if (!seatContainer) return;
+                
+                // Clear existing seats
+                seatContainer.innerHTML = '';
+                
+                // Create seats in rows
+                for (let row = 0; row < 5; row++) {
+                    for (let seat = 0; seat < 12; seat++) {
+                        const seatEl = document.createElement('div');
+                        seatEl.className = 'seat';
+                        seatEl.style.left = `${seat * 12}px`;
+                        seatEl.style.top = `${row * 10}px`;
+                        
+                        // Highlight your seat
+                        if (row === 2 && seat === 5) {
+                            seatEl.classList.add('highlight');
+                        }
+                        
+                        seatContainer.appendChild(seatEl);
+                    }
+                }
+            }
+        }
+        
+        // Payment demo
+        function initPaymentDemo() {
+            const simulatePaymentBtn = document.getElementById('simulatePaymentBtn');
+            const paymentCircle = document.querySelector('.payment-circle');
+            const paymentSuccess = document.getElementById('paymentSuccess');
+            
+            if (simulatePaymentBtn && paymentCircle && paymentSuccess) {
+                simulatePaymentBtn.addEventListener('click', () => {
+                    // Add active class to create ripple effect
+                    paymentCircle.classList.add('payment-active');
+                    
+                    // After animation, show success message
+                    setTimeout(() => {
+                        paymentCircle.style.display = 'none';
+                        paymentSuccess.classList.remove('hidden');
+                        
+                        // Reset after a while
+                        setTimeout(() => {
+                            paymentCircle.classList.remove('payment-active');
+                            paymentCircle.style.display = 'flex';
+                            paymentSuccess.classList.add('hidden');
+                        }, 3000);
+                    }, 2000);
+                });
+            }
+        }
+        
+        // AR demo
+        function initARDemo() {
+            const arDemoButton = document.getElementById('arDemoButton');
+            const arOverlay = document.getElementById('arOverlay');
+            const closeArBtn = document.getElementById('closeArBtn');
+            
+            if (arDemoButton && arOverlay) {
+                arDemoButton.addEventListener('click', () => {
+                    arOverlay.classList.add('active');
+                });
+            }
+            
+            if (closeArBtn && arOverlay) {
+                closeArBtn.addEventListener('click', () => {
+                    arOverlay.classList.remove('active');
+                });
+            }
+        }
+        
+        // Emergency demo
+        function initEmergencyDemo() {
+            const emergencyBtn = document.getElementById('emergencyBtn');
+            const emergencyModal = document.getElementById('emergencyModal');
+            const cancelEmergencyBtn = document.getElementById('cancelEmergencyBtn');
+            
+            if (emergencyBtn && emergencyModal) {
+                emergencyBtn.addEventListener('click', () => {
+                    emergencyModal.classList.remove('hidden');
+                });
+            }
+            
+            if (cancelEmergencyBtn && emergencyModal) {
+                cancelEmergencyBtn.addEventListener('click', () => {
+                    emergencyModal.classList.add('hidden');
+                });
+            }
+        }
+        
+        // Initialize everything when document is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            initScreenNavigation();
+            initMatchTabs();
+            initNavigationDemo();
+            initPaymentDemo();
+            initARDemo();
+            initEmergencyDemo();
+        });
+    </script>
+</body>
+</html>
