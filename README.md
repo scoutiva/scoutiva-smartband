@@ -70,7 +70,7 @@ Scoutiva represents our vision of a smarter, safer, and more immersive global fa
 
 ## 📂 Resources
 
-- [Official Presentation (PDF)](presentation/Scoutiva_Pitch_Deck.pdf)  
+- [Official Presentation (PDF)](presentation/p1.pdf)  
 - [Instagram](https://www.instagram.com/scoutiva_sa)  
 - [TikTok](https://www.tiktok.com/@scoutiva_sa)  
 - [X / Twitter](https://x.com/scoutiva_sa)  
