@@ -376,6 +376,10 @@
         }
     </style>
 </head>
+    
+    <div id="led-indicator" style="width: 20px; height: 20px; background: grey; border-radius: 50%; margin: 10px;"></div>
+<div id="ai-warning" style="display: none; color: red; font-weight: bold;"></div>
+
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex items-center justify-center p-4">
     <!-- Dark mode toggle -->
     <div class="fixed top-5 left-5 z-50">
@@ -2196,6 +2200,9 @@
         </div>
     </div>
 
+    <script src="ai-bridge.js"></script>
+
+    
     <script>
         // Dark mode functionality
         function initDarkMode() {
