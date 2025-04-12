@@ -1,80 +1,149 @@
-# ⚽ Scoutiva Smartband
 
-*A next-gen wearable redefining the fan experience at FIFA World Cup 2034 in Saudi Arabia.*  
-Built with *AI, **AR, and **solar technology*, Scoutiva is more than a device — it's your personal stadium assistant.
+# 🏆 Scoutiva Smartband – AI-Powered Wearable for FIFA World Cup 2034
 
 ![Scoutiva Mockup](https://i.ibb.co/Qv5kn1HM/ssssssw-removebg-preview.png)
 
+**Scoutiva** is a next-gen smartband powered by **Artificial Intelligence**, **Augmented Reality**, and **Solar Energy**, created to redefine the fan experience during the **FIFA World Cup 2034** in **Saudi Arabia**. It delivers a **smart**, **safe**, and **sustainable** journey for every football enthusiast.
+
+🔗 **Live Demo**: [https://scoutiva.netlify.app](https://scoutiva.netlify.app)  
+📂 **GitHub Repository**: [github.com/scoutiva/scoutiva-smartband](https://github.com/scoutiva/scoutiva-smartband)
 
 ---
 
-## 🔍 What is Scoutiva?
+## 📖 Overview
 
-*Scoutiva* is an AI-powered smart wristband designed to revolutionize how fans engage with stadiums.  
-From real-time navigation to instant purchases and immersive AR content, Scoutiva transforms passive spectators into connected, empowered participants — all while celebrating Saudi culture.
+Scoutiva was built by a passionate team of Saudi students to solve real stadium challenges, including:
+
+- ❌ Difficulty navigating massive stadiums  
+- ⏱️ Long queues for food, merchandise, and services  
+- 😐 Low engagement and cultural immersion  
+
+It empowers fans through a wearable device that provides:
+
+- Smart navigation  
+- Instant, contactless payments  
+- Real-time alerts and safety  
+- Augmented reality content  
+- Sustainable energy via solar charging
 
 > "Designed in Saudi Arabia. Built for the world."
 
 ---
 
-## ✨ Core Features
+## ✨ Key Features
 
 | Feature                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| *Smart Navigation*   | Turn-by-turn directions to your seat using AI and haptic feedback.          |
-| *Instant Payments*   | Contactless, secure, and fast payments at vendors and kiosks.               |
-| *Augmented Reality*  | Live stats, replays, mini-games, and cultural AR content via simple gestures. |
-| *Health & Safety*    | Real-time heart rate monitoring and instant emergency alerts.               |
-| *Solar Charging*     | Eco-friendly and built for long event days — powered by sunlight.           |
-| *Cultural Experience*| Unlock Saudi stories, landmarks, and traditions using Scoutiva.             |
-| *Accessibility*      | Voice navigation, vibration alerts, and simplified interfaces for all fans. |
+| 🧭 Smart Navigation     | AI-powered, real-time directions to seats, facilities, and exits.            |
+| 💳 Instant Payments     | Seamless NFC-based contactless payments.                                   |
+| 🚨 Safety Alerts        | Live emergency notifications and crowd monitoring.                          |
+| 🕶️ AR Interactions      | AR experience for match stats, cultural content, and player profiles.       |
+| ♿ Accessibility Support| Audio/haptic guidance for users with disabilities.                          |
+| ☀️ Solar Charging       | Eco-friendly power through built-in solar cells.                            |
 
 ---
 
-## 🌐 Live Demo
+## 👥 Target Users
 
-- *Website:* [scoutiva.netlify.app](https://scoutiva.netlify.app)
-- *App Preview:* [app-scoutiva.netlify.app](https://app-scoutiva.netlify.app)
-
----
-
-## 🧠 Technologies Used
-
-- *AI / ML:* Real-time fan flow analysis & smart routing
-- *AR:* Fan engagement through mobile & wearable AR content
-- *IoT:* Synchronized smart devices & stadium infrastructure
-- *Solar Energy:* Efficient, sustainable charging system
-- *Web Stack:* React.js, HTML5, CSS3, JavaScript
+- 🌍 Local and international fans  
+- 🧑‍🦽 People with disabilities  
+- 👪 Families and first-time attendees  
+- 💼 VIP guests (receive a premium version)  
+- 🔐 Stadium operators and security teams
 
 ---
 
-## 🛠 Project Status & Roadmap
+## 🛠 Technologies Used
 
-- ✅ Ideation & prototype design  
-- ✅ Web & app concept interfaces  
-- ⏳ Hardware integration (in progress)  
-- ⏳ Pilot testing in local stadium  
-- ⏳ Collaboration with FIFA organizers  
-- 🚀 Launch in FIFA World Cup 2034
-
----
-
-## 🧑‍💻 Meet the Team
-
-We are a team of 4 Saudi students passionate about technology, sports, and user experience.  
-Scoutiva represents our vision of a smarter, safer, and more immersive global fan journey.
-
-> Interested in investing, collaborating, or mentoring? Let’s connect.
+- **Languages:** Python, JavaScript  
+- **Frameworks/Libraries:** React Native, TensorFlow, OpenCV  
+- **Hardware:** Custom wearable with NFC, sensors, solar cells  
+- **APIs:** Google Maps, Payment Gateways  
+- **Cloud Services:** Firebase (prototype), AWS (future deployment)  
+- **AI Models:** Routing, crowd prediction, anomaly detection
 
 ---
 
-## 📂 Resources
+## 🧠 AI Integration
 
-- [Official Presentation (PDF)](presentation/p1.pdf)  
-- [Instagram](https://www.instagram.com/scoutiva_sa)  
-- [TikTok](https://www.tiktok.com/@scoutiva_sa)  
-- [X / Twitter](https://x.com/scoutiva_sa)  
-- [Telegram](https://t.me/scoutiva_sa)
+Scoutiva's AI engine provides:
+
+- 👣 Real-time crowd density prediction  
+- 🎯 Personalized suggestions and navigation  
+- 🚨 Anomaly detection and safety alerts
+
+### ✅ Live AI Integration with UI
+
+We’ve connected our **CrowdSense AI model** with the wearable app interface using the `ai-bridge.js` module located in the `app/` directory.  
+When congestion is detected, the AI system triggers:
+
+- 🔔 Band vibrations  
+- 💡 Screen flashes  
+- ⚠️ Visual alerts for users
+
+> This functional prototype shows how AI enhances safety and responsiveness. Upon winning the competition, we aim to fully implement this system in real stadium environments.
+
+🔍 See more in [`AI_LOGIC.md`](./docs/AI_LOGIC.md)
+
+---
+
+## 🕶 Augmented Reality Experience
+
+Scoutiva delivers immersive AR interactions, including:
+
+- 📊 Live match stats and event overlays  
+- 🏟 Virtual stadium navigation and route previews  
+- 🇸🇦 Cultural content: music, language, history, and traditions
+
+---
+
+## 🌱 Sustainability Commitment
+
+| Area              | Description                                                   |
+|-------------------|---------------------------------------------------------------|
+| ☀️ Solar Energy    | Powered by solar cells for all-day operation                 |
+| ♻️ Eco Design      | Built with recyclable materials and minimal e-waste strategy |
+| 🔄 Modular Build   | Replaceable components to increase device longevity          |
+
+---
+
+## 🏗 System Architecture
+
+```mermaid
+graph TD
+A[User] --> B[Scoutiva Smartband]
+B --> C[Bluetooth/NFC]
+B --> D[Sensors & AR Camera]
+B --> E[Solar Charging Unit]
+B --> F[AI Backend Server]
+F --> G[Smart Routing Engine]
+F --> H[Emergency Detection & Alerts]
+F --> I[Personalized Content Delivery]
+```
+
+---
+
+## 🛣️ Roadmap
+
+- ✅ Prototype with live AI and UI interaction  
+- 🧪 Field-testing with real users (Planned)  
+- 🏭 Hardware manufacturing with partners (Pending)  
+- 📱 Mobile companion app for iOS/Android (Planned)  
+- 🌍 International launch at FIFA World Cup 2034 (Goal)  
+
+---
+
+## 🤝 Contributing
+
+We welcome contributors who are passionate about:
+
+- AI & ML  
+- Augmented Reality  
+- Embedded systems  
+- UX/UI for wearables  
+- Smart city and sports tech  
+
+See `CONTRIBUTING.md` for more information.
 
 ---
 
@@ -83,13 +152,13 @@ Scoutiva represents our vision of a smarter, safer, and more immersive global fa
 - Email: [scoutiva@outlook.com]  
 - GitHub: [github.com/scoutiva](https://github.com/scoutiva)
 
+
+
+## 📜 License
+
+This project is open-sourced under the MIT License.  
+View the full license in the `LICENSE` file.
+
 ---
 
-## ⭐ Support Us
-
-If you like this project or believe in its vision, give it a ⭐ on GitHub!  
-We're open to contributors, mentors, and investors.
-
----
-
-> *Scoutiva: The smart way to enjoy the beautiful game.*
+**Made with ❤️ by Team Scoutiva – Saudi Arabia 🇸🇦**
