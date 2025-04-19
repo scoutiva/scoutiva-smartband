@@ -1,6 +1,4 @@
 
----
-
 # **Scoutiva Smartband Roadmap**
 
 **Scoutiva** is a cutting-edge smart wearable designed to enhance the fan experience at large-scale events such as the FIFA World Cup 2034 in Saudi Arabia. Combining AI, Augmented Reality (AR), instant payments, and sustainability, Scoutiva aims to revolutionize how fans engage with sports, while promoting cultural heritage and eco-friendly innovations.
